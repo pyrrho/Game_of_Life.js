@@ -8,6 +8,13 @@
     <link rel="stylesheet" href="./main.css" />
     <link rel="stylesheet" href="./lib/themes/jquery.ui.all.css" />
 
+    <!--CoffeeScript compiler shim. This should eventually be a pre-
+    process thing, rather than an interpretation thing, but. -->
+    <script src="http://jashkenas.github.com/coffee-script/extras/coffee-script.js" type="text/javascript" charset="utf-8"></script>
+    <script type = "text/coffeescript">
+        alert "can has coffee?"
+    </script>
+
     <script type="text/javascript" src="./lib/raphael.js"></script>
     <script type="text/javascript" src="./lib/jquery-1.7.js"></script>
 
@@ -16,9 +23,9 @@
     <script type="text/javascript" src="./lib/ui/jquery.ui.mouse.js"></script>
     <script type="text/javascript" src="./lib/ui/jquery.ui.draggable.js"></script>
     
-    <script tpye="text/javascript" src="./init.js"></script>
     <script tpye="text/javascript" src="./ui.js"></script>
     <script type="text/javascript" src="./grid.js"></script>
+    <script tpye="text/javascript" src="./init.js"></script>
 </head>
 
 <body>
