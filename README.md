@@ -1,4 +1,4 @@
-(my)GameOfLife.js
+my Game\_Of\_Life.js
 =================
 An implementation of John Conway's Game of Life implemented using HTML5, CSS3 and JavaScript (or CoffeScript. Haven't decided yet.)
 
