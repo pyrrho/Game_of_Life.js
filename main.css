@@ -1,31 +1,32 @@
+body {
+    font-family: sans-serif;
+}
+
 sub {
     font-size: 80%;
-    vertical-align: -20%;
+    vertical-align: -15%;
 }
 
 p {
-    margin-bottom: .5em;
-}
-
-li {
-    
-}
-
-#title_text {
-    font-size: 200%;
+    padding-bottom: .4em;
 }
 
 .movable_pane {
     position: absolute;
-    padding: 20px;
+    padding: 10px;
     background-color: rgba(0, 0, 0, 0.6);
     color: #fff;
     border-radius: 8px;
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
-    /*cursor: default;*/
+    cursor: default;
+    /*display: none;*/
 }
 
 #help_pane {
-    width: 150;
-    height: 150;
+    width: 450px;
+}
+
+#title_text {
+    font-size: 200%;
+    font-family: serif;
 }

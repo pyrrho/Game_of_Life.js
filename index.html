@@ -9,19 +9,20 @@
     <link rel="stylesheet" href="./lib/themes/jquery.ui.all.css" />
 
     <script type="text/javascript" src="./lib/raphael.js"></script>
-    <script type="text/javascript" src="./lib/jquery-1.7.js/"></script>
+    <script type="text/javascript" src="./lib/jquery-1.7.js"></script>
 
-    <script type="text/javascript" src="./lib/ui/jquery.ui.core.min.js"></script>
-    <script type="text/javascript" src="./lib/ui/jquery.ui.widget.min.js"></script>
-    <script type="text/javascript" src="./lib/ui/jquery.ui.mouse.min.js"></script>
+    <script type="text/javascript" src="./lib/ui/jquery.ui.core.js"></script>
+    <script type="text/javascript" src="./lib/ui/jquery.ui.widget.js"></script>
+    <script type="text/javascript" src="./lib/ui/jquery.ui.mouse.js"></script>
+    <script type="text/javascript" src="./lib/ui/jquery.ui.draggable.js"></script>
     
-    <script type="text/javascript" src="/.panes.js"></script>
+    <script tpye="text/javascript" src="./panes.js"></script>
 </head>
 
 <body>
     <div id="draw_space"></div>
 
-    <div id="help_pane" class="movable_pane">
+    <div id="help_pane" class="movable_pane ui-widget-content">
         <p id="title_text"><sub>my</sub>Game of Life</p>
         <p> This be my implementation of Conway's Game of Life, a project I'm
             embarking on in order to gain some experience working with HTML5,
