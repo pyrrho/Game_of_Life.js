@@ -1,3 +1,4 @@
 $(function() {
-    UI.init()
+    GridView.init($(window).width(), $(window).height());
+    UI.init();
 });

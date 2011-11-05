@@ -1,5 +1,5 @@
 window.UI = {
     init: function() {
-        $('.movable_pane').draggable();
+        $('.movable_pane').draggable().show();
     },
 };
