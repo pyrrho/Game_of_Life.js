@@ -1,6 +1,15 @@
 body {
     font-family: sans-serif;
-    /*overflow: hidden;*/
+    overflow: hidden;
+    padding-bottom: .4em;
+}
+
+header {
+    padding-bottom: .2em;
+}
+
+p {
+    padding-bottom: .4em;
 }
 
 sub {
@@ -8,7 +17,10 @@ sub {
     vertical-align: -15%;
 }
 
-p {
+li {
+    list-style: disc inside;
+    padding-left: 2em;
+    text-indent: -1em;
     padding-bottom: .4em;
 }
 
@@ -21,12 +33,13 @@ p {
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
     cursor: default;
     display: none;
+    word-wrap: break-word;
 }
 
 #help_pane {
     top: 20px;
     left: 20px;
-    width: 450px;
+    width: 300px;
 }
 
 #title_text {

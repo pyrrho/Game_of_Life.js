@@ -15,8 +15,8 @@
     <script type="text/javascript" src="./lib/ui/jquery.ui.mouse.js"></script>
     <script type="text/javascript" src="./lib/ui/jquery.ui.draggable.js"></script>
     
-    <script tpye="text/javascript" src="./ui.js"></script>
-    <script type="text/javascript" src="./grid.js"></script>
+    <script tpye="text/javascript" src="./src/js/ui.js"></script>
+    <script type="text/javascript" src="./src/js/grid.js"></script>
     <script tpye="text/javascript" src="./build/init.js"></script>
 </head>
 
@@ -24,16 +24,16 @@
     <div id="draw_space"></div>
 
     <div id="help_pane" class="movable_pane ui-widget-content">
-        <p id="title_text"><sub>my</sub>Game of Life</p>
+        <header id="title_text"><sub>my</sub>Game of Life</header>
         <p> This be my implementation of Conway's Game of Life, a project I'm
             embarking on in order to gain some experience working with HTML5,
-            CSS3, and probably both JavaScript and Coffee Script. </p>
-        <p> The rules, more for my benefit than yours, are as follows:
-            <li>Any live cell with fewer than two live neighbors dies.</li>
+            CSS3, and probably both JavaScript and CoffeeScript. </p>
+        <ul> The rules---more for my benefit than yours---are as follows:
+            <li>Any live cell with fewer than two live neighbors dies</li>
             <li>Any live cell with more than three live neighbors dies</li>
             <li>Any live cell with two or three live neighbors survives</li>
-            <li>Any dead cell with exactly three live neighbors becomes alive.</li>
-            </p>
+            <li>Any dead cell with exactly three live neighbors becomes alive</li>
+            </ul>
     </div>
 
     <div id="timer_pane"></div>

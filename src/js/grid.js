@@ -3,7 +3,6 @@ window.GridView = {
 
     init: function(width, height) {
         self = this;
-        alert("A thing")
         //Set up the Rapgael paper (canvas)
         self.paper = Raphael('draw_space');
 
