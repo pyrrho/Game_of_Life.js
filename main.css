@@ -4,13 +4,9 @@ body {
     padding-bottom: .4em;
 }
 
-header {
-    padding-bottom: .2em;
-}
+header { padding-bottom: .2em; }
 
-p {
-    padding-bottom: .4em;
-}
+p { padding-bottom: .4em; }
 
 sub {
     font-size: 80%;
@@ -25,20 +21,29 @@ li {
 }
 
 .movable_pane {
-    position: absolute;
     padding: 10px;
     background-color: rgba(0, 0, 0, 0.6);
     color: #fff;
     border-radius: 8px;
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
-    cursor: default;
     word-wrap: break-word;
 }
 
 #help_pane {
+    position: absolute;
     top: 20px;
     left: 20px;
     width: 300px;
+}
+
+#timer_pane_container {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    margin-left: -100px;
+}
+#timer_pane {
+    width: 200px;
 }
 
 #title_text {

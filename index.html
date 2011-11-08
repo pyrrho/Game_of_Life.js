@@ -23,7 +23,7 @@
 <body>
     <div id="draw_space"></div>
 
-    <div id="help_pane" class="movable_pane ui-widget-content">
+    <div id="help_pane" class="movable_pane">
         <header id="title_text"><sub>my</sub>Game of Life</header>
         <p> This be my implementation of Conway's Game of Life, a project I'm
             embarking on in order to gain some experience working with HTML5,
@@ -36,6 +36,8 @@
             </ul>
     </div>
 
-    <div id="timer_pane"></div>
+    <div id="timer_pane_container"><div id="timer_pane" class="movable_pane">
+        The number of alive cells is <span id="cell_count">0</span>
+    </div></div>
 </body>
 

@@ -1,3 +1,17 @@
+window.GridModel = 
+    init: () ->
+        @live_cells = []
+        @seed_cells = []
+        @dead_cells = []
+        undefined
+
+    raiseCell: (grid_x, grid_y) ->
+        @live_cells.push [grid_x, grid_y]
+        $('#cell_count').text(@live_cells.length)
+        GridView.colorRect grid_x, grid_y
+        undefined
+
+
 window.GridView =
     _node_size: 30
     init: (width, height) ->
@@ -21,10 +35,14 @@ window.GridView =
         @paper.setSize @width, @height
 
         #Draw them Rects
+        @rects = []
         for i in [0..@node_cols]
+            @rects[i] = []
             for j in [0..@node_rows]
-                @paper.rect(i*@_node_size, j*@_node_size,
-                            @_node_size, @_node_size).attr('stroke-opacity', .2)
+                temp =  @paper.rect(i*@_node_size, j*@_node_size,
+                                    @_node_size, @_node_size)
+                temp.attr('stroke-opacity', .2)
+                @rects[i][j] = temp
         undefined
 
     pageToGrid: (x, y) ->
@@ -32,7 +50,12 @@ window.GridView =
         x: Math.floor(x / this._node_size),
         y: Math.floor(y / this._node_size)
 
+    colorRect: (x, y) ->
+        @rects[x][y].attr {fill: "#CCC"}
+        undefined
+
 
 window.GridController = 
     onMouseDown: (x, y) ->
-        alert "Mouse Down at: " + [x, y]
+        GridModel.raiseCell(x, y)
+        undefined
