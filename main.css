@@ -1,7 +1,6 @@
 body {
     font-family: sans-serif;
     overflow: hidden;
-    padding-bottom: .4em;
 }
 
 header { padding-bottom: .2em; }
@@ -42,9 +41,35 @@ li {
     width: 200px;
     top: 100%; left: 50%;
     margin-left: -100px; margin-top: -6em;
+    -webkit-user-select: none;
 }
 
 #title_text {
     font-size: 200%;
     font-family: serif;
+}
+
+/* So here's where I start experimenting with buttons and types and
+   all that jazz */
+a.button_set {
+    display: inline-block;
+    height: 1.2em;
+}
+a.button_set span {
+    padding: .4em;
+    border-radius: .2em;
+    background: #c0d0f0;
+    font-weight: bold;
+    color: #333333;
+    border: solid 1px #7088bb;
+}
+a.button_set span:hover, a.button span:focus {
+    color:#111111;
+    background: #a0b0f0;
+    border: solid 1px #666666;
+}
+
+a.button_set span:active {
+    background: #808BC2;
+    border: solid 1px #4050A0;
 }
