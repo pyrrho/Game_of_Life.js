@@ -26,7 +26,6 @@ li {
     color: #fff;
     border-radius: 8px;
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
-    word-wrap: break-word;
 }
 
 #help_pane {
@@ -34,16 +33,15 @@ li {
     top: 20px;
     left: 20px;
     width: 300px;
+    display: none;
+    word-wrap: break-word;
 }
 
-#timer_pane_container {
-    position: absolute;
-    bottom: 10px;
-    left: 50%;
-    margin-left: -100px;
-}
 #timer_pane {
+    position: absolute;
     width: 200px;
+    top: 100%; left: 50%;
+    margin-left: -100px; margin-top: -6em;
 }
 
 #title_text {
