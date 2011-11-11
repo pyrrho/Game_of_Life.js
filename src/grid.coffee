@@ -28,7 +28,7 @@ GoL = (canvas_element, width, height) ->
                     [-1, 0], [-1, 1],
                     [ 0, 1], [ 1, 1]]
 
-    ret.model.curret_step = 0
+    ret.model.current_step = 0
     ret.model.cell_count = 0
     ret.model.live_cells = {}
 
@@ -60,8 +60,8 @@ GoL = (canvas_element, width, height) ->
         #cell, and increment the neighbor count of all its neighbor_set
         #by one, checking to see if said neighbor is already alive.
         for x_s, cell_col of @live_cells
-            x = parseInt(x_s) 
-            for y_s, state of cell_col
+            for y_s, neighbor_count of cell_col
+                x = parseInt(x_s)
                 y = parseInt(y_s)
                 for n in neighbor_set
                     if @live_cells[n[0]+x]?[n[1]+y]?
@@ -73,19 +73,20 @@ GoL = (canvas_element, width, height) ->
         #Here we go _back_ over all them live cells, and kill the ones
         #that are either too friendly, or too lonely.
         for x_s, cell_col of @live_cells
-            x = parseInt(x_s) 
-            for y_s, neighbor_set of cell_col
-                y = parseInt(y_s)
-                @live_cells[x_s][y_s] = 0
-                if neighbor_set isnt 2 and neighbor_set isnt 3
+            for y_s, neighbor_count of cell_col
+                if neighbor_count isnt 2 and neighbor_count isnt 3
+                    x = parseInt(x_s)
+                    y = parseInt(y_s)
                     @killCell(x, y)
+                else
+                    @live_cells[x_s][y_s] = 0
         #Now we go through the list of effected dead cells, and see if
         #any of them should be coming to life or not.
         for x_s, cell_col of seeds
-            x = parseInt(x_s)
-            for y_s, neighbor_set of cell_col
-                y = parseInt(y_s)
-                if neighbor_set is 3
+            for y_s, neighbor_count of cell_col
+                if neighbor_count is 3
+                    x = parseInt(x_s)
+                    y = parseInt(y_s)
                     @raiseCell(x, y)
         undefined
 
@@ -163,7 +164,7 @@ GoL = (canvas_element, width, height) ->
         undefined), 5)
 
     ret.view.colorRect = (x, y, state) ->
-        @rects[x+@grid_offset.x][y+@grid_offset.y].attr state
+        @rects[x+@grid_offset.x]?[y+@grid_offset.y]?.attr state
         undefined
 
     ret.view.pageToGrid = (page_x, page_y) ->
