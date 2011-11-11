@@ -122,6 +122,9 @@ GoL.view = (raphael_element, width, height) ->
 
         #(Re)Set the size of the Raphael Canvas
         @paper.setSize @width, @height
+
+        #Draw that grid
+        @drawGrid()
         undefined
     
     view.moveOffset = (delta_x, delta_y) ->
@@ -131,22 +134,28 @@ GoL.view = (raphael_element, width, height) ->
         $("#debug_pane p span:eq(0)").text "X:#{@px_offset.x} Y:#{@px_offset.y}"
 
         if Math.abs(@px_offset.x) >= node_size
-            if @px_offset.x > 0 then @grid_offset.x += 1 else @grid_offset.x -= 1
+            if @px_offset.x > 0 
+                @grid_offset.x += Math.floor(@px_offset.x / node_size)
+            else
+                @grid_offset.x += Math.ceil(@px_offset.x / node_size)
             @px_offset.x = @px_offset.x % node_size
         
         if Math.abs(@px_offset.y) >= node_size
-            if @px_offset.y > 0 then @grid_offset.y += 1 else @grid_offset.y -= 1
+            if @px_offset.y > 0 
+                @grid_offset.y += Math.floor(@px_offset.y / node_size)
+            else
+                @grid_offset.y += Math.ceil(@px_offset.y / node_size)
             @px_offset.y = @px_offset.y % node_size
-        #TODO: Hm. Looks like we should probably be moving, rather
-        #than clearing elements....
-        @paper.clear()
-        @drawGrid()
+
+        _.defer => @drawGrid()
         undefined
         
-    view.drawGrid = () ->
+    view.drawGrid = _.throttle (() ->
         #So, we're gonna go for the brute-force here. I feel like
         #that's a pretty bad idea, but... premature optimizations and
         #all that.
+        @paper.clear()
+
         @rects = []
         for i in [-1..@node_cols]
             @rects[i] = []
@@ -161,7 +170,7 @@ GoL.view = (raphael_element, width, height) ->
                     attrs = GoL.state_set.empty
                 temp.attr(attrs)
                 @rects[i][j] = temp
-        undefined
+        undefined), 5
 
     view.colorRect = (x, y, state) ->
         @rects[x+@grid_offset.x][y+@grid_offset.y].attr state
@@ -172,7 +181,6 @@ GoL.view = (raphael_element, width, height) ->
         y: Math.floor((page_y-@px_offset.y)/node_size)
 
     view.resizeGrid(width, height)
-    view.drawGrid()
     return view
 
 
