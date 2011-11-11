@@ -4,9 +4,10 @@
 $files = Dir.glob('src/*.coffee').join(' ')
 
 def brew(csf)
-    puts "Detected change in #{csf}"
+    puts "Detected change in #{csf} at #{Time.now}"
     puts "Running coffee -o coffee/ -j -c #{$files}"
     out = system("node C:/Users/rew/CoffeeScript/bin/coffee -o coffee/ -j GoL.coffee.js #{$files}")
+    puts
 end
 
 def rnm(jsf)
