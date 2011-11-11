@@ -226,6 +226,9 @@ GoL = (canvas_element, width, height) ->
             $raphael.off "mousemove"
             ret.ctrl.resolveMouseup event.pageX, event.pageY
             undefined
+        $(window).on "resize", _.debounce (() =>
+            ret.view.resizeGrid($(window).width(), $(window).height())
+            ), 90
         undefined
     )()
 
