@@ -73,3 +73,9 @@ a.button_set span:active {
     background: #808BC2;
     border: solid 1px #4050A0;
 }
+
+#debug_pane {
+    position: absolute;
+    top: 20px; right: 20px;
+    width: 300px;
+}
