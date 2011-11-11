@@ -1,7 +1,8 @@
 # This is identical to `$(document).ready([callback])`
 $( ->
-    GridModel.init()
-    GridView.init $(window).width(), $(window).height()
+    window.GridModel = GoL.model()
+    window.GridView = GoL.view("draw_space", $(window).width(), $(window).height())
+    window.GridController = GoL.controller()
     UI.init()
     undefined
 )
