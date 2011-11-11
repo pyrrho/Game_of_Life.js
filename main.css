@@ -79,3 +79,6 @@ a.button_set span:active {
     top: 20px; right: 20px;
     width: 300px;
 }
+/* Below you will find how to interact with the debug pane
+$("#debug_pane p span:eq(0)").text "This wll get rendered"
+*/
