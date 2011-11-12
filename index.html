@@ -7,16 +7,16 @@
     <link rel="stylesheet" href="./reset.css" />
     <link rel="stylesheet" href="./main.css" />
 
-    <script type="text/javascript" src="./lib/raphael.js"></script>
-    <script type="text/javascript" src="./lib/jquery-1.7.js"></script>
-    <script type="text/javascript" src="./lib/underscore.js"></script>
+    <script src="./lib/raphael.js"></script>
+    <script src="./lib/jquery-1.7.js"></script>
+    <script src="./lib/underscore.js"></script>
 
-    <script type="text/javascript" src="./lib/ui/jquery.ui.core.js"></script>
-    <script type="text/javascript" src="./lib/ui/jquery.ui.widget.js"></script>
-    <script type="text/javascript" src="./lib/ui/jquery.ui.mouse.js"></script>
-    <script type="text/javascript" src="./lib/ui/jquery.ui.draggable.js"></script>
+    <script src="./lib/ui/jquery.ui.core.js"></script>
+    <script src="./lib/ui/jquery.ui.widget.js"></script>
+    <script src="./lib/ui/jquery.ui.mouse.js"></script>
+    <script src="./lib/ui/jquery.ui.draggable.js"></script>
     
-    <script tpye="text/javascript" src="./coffee/GoL.coffee.js"></script>
+    <script src="./coffee/GoL.coffee.js"></script>
 </head>
 
 <body>
@@ -24,19 +24,25 @@
 
     <div id="help_pane" class="movable_pane">
         <header id="title_text"><sub>my</sub>Game of Life</header>
-        <p> This be my implementation of Conway's Game of Life, a project I'm
-            embarking on in order to gain some experience working with HTML5,
-            CSS3, and probably both JavaScript and CoffeeScript. </p>
-        <ul> The rules---more for my benefit than yours---are as follows:
+        <p>This is my crack at a JavaScript-backed implementation of John Conway's ageless <a href="http://en.wikipedia.org/wiki/Conway's_Game_of_Life">Game of Life.</a></p>
+        <ul>The rules---as much for my benefit as yours---are as follows: Every generation
             <li>Any live cell with fewer than two live neighbors dies</li>
             <li>Any live cell with more than three live neighbors dies</li>
             <li>Any live cell with two or three live neighbors survives</li>
             <li>Any dead cell with exactly three live neighbors becomes alive</li>
-            </ul>
+        </ul>
+        &nbsp;
+        <ul>The modes of interaction with this board are as follows:
+            <li>Left-click any empty cell to make it alive</li>
+            <li>Left-click any live cell to kill it off</li>
+            <li>Left-click and drag anywhere on the board to move the view frustum</li>
+            <li>TODO: Right-click movement. Mouse-wheel zooming.</li> 
+        &nbsp;
+        <p>It should be noted that the grid I've implemented is (theoretically) infinite, so any gliders you loose will just keep on going. This shouldn't be a problematic memory leak (assuming you don't stock up on Glider Guns) as the underlying model only tracks live cells. This does, however, suggest a rather inefficient implementation---it is a web-app, after all---so don't expect anything extraordinary.</p>
     </div>
 
     <div id="timer_pane" class="movable_pane">
-        <a class="button_set"><span id="step" class="button">Step</span></a>
+        <span class="button_set"><span id="step" class="button">Step</span></a>
     </div>
 
     <div id="debug_pane" class="movable_pane">

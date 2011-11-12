@@ -9,6 +9,7 @@ p { padding-bottom: .4em; }
 
 sub {
     font-size: 80%;
+    font-style: italic;
     vertical-align: -15%;
 }
 
@@ -16,7 +17,7 @@ li {
     list-style: disc inside;
     padding-left: 2em;
     text-indent: -1em;
-    padding-bottom: .4em;
+    padding-bottom: .2em;
 }
 
 .movable_pane {
@@ -32,7 +33,6 @@ li {
     top: 20px;
     left: 20px;
     width: 300px;
-    display: none;
     word-wrap: break-word;
 }
 
@@ -49,13 +49,13 @@ li {
     font-family: serif;
 }
 
-/* So here's where I start experimenting with buttons and types and
-   all that jazz */
-a.button_set {
+/*PLAYING AROUND WITH PURE-CSS BUTTONS
+*/
+div.button_set {
     display: inline-block;
     height: 1.2em;
 }
-a.button_set span {
+div.button_set span {
     padding: .4em;
     border-radius: .2em;
     background: #c0d0f0;
@@ -63,22 +63,26 @@ a.button_set span {
     color: #333333;
     border: solid 1px #7088bb;
 }
-a.button_set span:hover, a.button span:focus {
+div.button_set span:hover, div.button_set span:focus {
     color:#111111;
     background: #a0b0f0;
     border: solid 1px #666666;
 }
 
-a.button_set span:active {
+div.button_set span:active {
     background: #808BC2;
     border: solid 1px #4050A0;
 }
 
+/*DEBUG PANE
+This should be entirely temporary.
+*/
 #debug_pane {
     position: absolute;
     top: 20px; right: 20px;
     width: 300px;
 }
-/* Below you will find how to interact with the debug pane
-$("#debug_pane p span:eq(0)").text "This wll get rendered"
+/*
+Example interaction with the debug pane:
+    $("#debug_pane p span:eq(0)").text "This wll get rendered"
 */

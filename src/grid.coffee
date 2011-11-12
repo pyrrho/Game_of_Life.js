@@ -161,7 +161,7 @@ GoL = (canvas_element, width, height) ->
                     attrs = state_set.empty
                 temp.attr(attrs)
                 @rects[i][j] = temp
-        undefined), 5)
+        undefined), 3)
 
     ret.view.colorRect = (x, y, state) ->
         @rects[x+@grid_offset.x]?[y+@grid_offset.y]?.attr state
@@ -222,12 +222,13 @@ GoL = (canvas_element, width, height) ->
                 ret.ctrl.resolveMousemove event.pageX, event.pageY
                 undefined
             undefined
-        $("body").on "mouseup", (event) =>
+        $(window).on "mouseup", (event) =>
             $raphael.off "mousemove"
             ret.ctrl.resolveMouseup event.pageX, event.pageY
             undefined
         $(window).on "resize", _.debounce (() =>
             ret.view.resizeGrid($(window).width(), $(window).height())
+            undefined
             ), 90
         undefined
     )()
