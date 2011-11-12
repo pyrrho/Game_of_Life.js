@@ -30,10 +30,9 @@ div.movable_pane {
 div.movable_pane p { padding-bottom: .4em; }
 
 div.movable_pane ul {
-    /*list-style: disc inside;*/
+    list-style: disc inside;
 }
 div.movable_pane li {
-    list-style: disc inside;
     padding-left: 2em;
     text-indent: -1em;
     padding-bottom: .2em;
@@ -56,45 +55,69 @@ div.movable_pane li {
 }
 
 /*Playing around with (mostly) pure CSS tabs
-  Huh. I guess these aren't goint to be anything more than buttons
-  unless I'm willing to tear up the .moving_pane class some.
 */
+/*First thing to note, this isn't very DRY.
+  In theis first `tab_menu`, we're specifying the hight, but we have
+  to do so again in `tab_menu li`. Also, here is a really important
+  `margin-top. Without it the top *and* bottom borders defined in
+  `tab_menu li` (more accurately the negative `margin-top` needed to
+  compinsate) will cause really ugly offsets.*/
 ul.tab_menu {
-    float:left;
     height: 2em;
-    /*border-bottom: 1px solid #ccc;*/
-    /*border-left: 1px solid #ccc;*/
-    width: 100%;
+    margin-top: 8px;
 }
+/*Here, note that `line-hight` is identical to the previous `hight`.
+  That's intentional, and _important_.*/
 ul.tab_menu li {
     list-style: none;
-    float: left;
-    /*height: 31px;*/
+    text-indent: 0px;
+    padding: 0px;
     line-height: 2em;
-    /*border: 1px solid #ccc;*/
+    float: left;
     position: relative;
-    text-indent: 0;
-    padding: 0;
-    background-color: rgba(200, 200, 200, 0.8);
+    background-color: #efefef;
+    margin-top: -4px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-top: 2px solid #ccc;
+    border-right: 1px solid #ccc;
+    border-bottom: 2px solid #ccc;
+    border-left: 1px solid #ccc;
 }
-ul.tab_menu li.active, ul.tab_menu li.active a:hover {
-    background-color: rgba(230, 230, 230, 0.8);
-    border-bottom: rgba(230, 230, 230, 0.8);
+ul.tab_menu li:first-child {
+    border-left: 2px solid #ccc;
+}
+ul.tab_menu li:last-child {
+    border-right: 2px solid #ccc;
+}
+/*Changing the background while the mouse is hovering.*/
+ul.tab_menu li:hover {
+    background-color: #bbb;
+}
+ul.tab_menu li.open, ul.tab_menu li.open:hover {
+    background-color: #fff;
+    border-bottom: 2px solid #fff;
 }
 ul.tab_menu li a {
     display: block;
     text-decoration: none;
     color: #555;
     padding: 0px 20px;
-    /*background-color: rgba(180, 180, 180, 0.8);*/
-}
-ul.tab_menu li a:hover {
-    background-color: rgba(0, 230, 0, 0.8);
 }
 
+div.tab_container {
+    background-color: #fff;
+    border: 2px solid #ccc;
+    margin-top: -2px;
+    border-radius: 8px;
+    border-top-left-radius: 0px;
+    padding: .6em;
+}
 div.tab_content {
     display: none;
 }
+
+
 /*PLAYING AROUND WITH PURE-CSS BUTTONS
 */
 div.button_set {

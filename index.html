@@ -1,85 +1,83 @@
 <!DOCTYPE HTML>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <title>myGame of Life -- a CoffeeScript, CSS3, and HTML5 experiment</title>
-    <meta name="description" content="A simple implementation of Conway's Game of Life using CoffeeScript, CSS3 and HTML5." />
+  <meta charset="utf-8">
+  <title>myGame of Life -- a CoffeeScript, CSS3, and HTML5 experiment</title>
+  <meta name="description" content="A simple implementation of Conway's Game of Life using CoffeeScript, CSS3 and HTML5." />
 
-    <link rel="stylesheet" href="./reset.css" />
-    <link rel="stylesheet" href="./main.css" />
+  <link rel="stylesheet" href="./reset.css" />
+  <link rel="stylesheet" href="./main.css" />
 </head>
 
 <body>
-    <!--This is the element subsumed by Raphael, on which all of the
-        vector images are to be drawn. It maybe should be a canvas. -->
-    <div id="draw_space"></div>
+  <!--This is the element subsumed by Raphael, on which all of the
+      vector images are to be drawn. It maybe should be a canvas. -->
+  <div id="draw_space"></div>
 
-    <!--The Help Pane here is where the basics are explained. -->
-    <div id="help_pane" class="movable_pane">
-        <ul class="tab_menu">
-            <li><a href="#tab_what">What?</a></li>
-            <li><a href="#tab_why">Why?</a></li>
-            <li><a href="#tab_how">How?</a></li>
+  <!--The Help Pane here is where the basics are explained. -->
+  <div id="help_pane" class="movable_pane">
+    <h1><sub>my</sub>Game of Life</h1>
+      <ul class="tab_menu">
+        <li><a href="#tab_what">What?</a></li>
+        <li><a href="#tab_why">Why?</a></li>
+        <li><a href="#tab_how">How?</a></li>
+      </ul>
+    <div class="tab_container">
+      <div id="tab_what" class="tab_content">
+        <p>This is my crack at a JavaScript-backed implementation of John Conway's ageless <a href="http://en.wikipedia.org/wiki/Conway's_Game_of_Life">Game of Life.</a></p>
+        <ul>The rules---as much for my benefit as yours---are as follows: Every generation
+          <li>Any live cell with fewer than two live neighbors dies</li>
+          <li>Any live cell with more than three live neighbors dies</li>
+          <li>Any live cell with two or three live neighbors survives</li>
+          <li>Any dead cell with exactly three live neighbors becomes alive</li>
         </ul>
         &nbsp;
-        <h1><sub>my</sub>Game of Life</h1>
-        &nbsp;
-        <div class="tab_container">
-            <div id="tab_what" class="tab_content">
-                <p>This is my crack at a JavaScript-backed implementation of John Conway's ageless <a href="http://en.wikipedia.org/wiki/Conway's_Game_of_Life">Game of Life.</a></p>
-                <ul>The rules---as much for my benefit as yours---are as follows: Every generation
-                    <li>Any live cell with fewer than two live neighbors dies</li>
-                    <li>Any live cell with more than three live neighbors dies</li>
-                    <li>Any live cell with two or three live neighbors survives</li>
-                    <li>Any dead cell with exactly three live neighbors becomes alive</li>
-                </ul>
-                &nbsp;
-                <ul>The modes of interaction with this board are as follows:
-                    <li>Left-click any empty cell to make it alive</li>
-                    <li>Left-click any live cell to kill it off</li>
-                    <li>Left-click and drag anywhere on the board to move the view frustum</li>
-                    <li>TODO: Right-click movement. Mouse-wheel zooming.</li> 
-                </ul>
-            </div>
-            <div id="tab_why" class="tab_content">
-                <p>I've put this whole thing for my own edification. It was an experiment designed solely to glean a familiarity with CoffeeScript (and, as a result, JavaScript), HTML5 and CSS3. I wanted to do as much of the formatting---structure, typography, visual flare---in HTML and CSS less so that I can learn the old way of putting web pages together, but so that I know what to look for in the "right" way.</p>
-            </div>
-            <div id="tab_how" class="tab_content">
-                <p>Ahh fuck it. I'll add this content in when I have the structure fleshed out.</p>
-                <p>It should be noted that the grid I've implemented is (theoretically) infinite, so any gliders you loose will just keep on going. This shouldn't be a problematic memory leak (assuming you don't stock up on Glider Guns) as the underlying model only tracks live cells. This does, however, suggest a rather inefficient implementation---it is a web-app, after all---so don't expect anything extraordinary.</p>
-            </div>
-        </div>
+        <ul>The modes of interaction with this board are as follows:
+          <li>Left-click any empty cell to make it alive</li>
+          <li>Left-click any live cell to kill it off</li>
+          <li>Left-click and drag anywhere on the board to move the view frustum</li>
+          <li>TODO: Right-click movement. Mouse-wheel zooming.</li> 
+        </ul>
+      </div>
+      <div id="tab_why" class="tab_content">
+        <p>I've put this whole thing for my own edification. It was an experiment designed solely to glean a familiarity with CoffeeScript (and, as a result, JavaScript), HTML5 and CSS3. I wanted to do as much of the formatting---structure, typography, visual flare---in HTML and CSS less so that I can learn the old way of putting web pages together, but so that I know what to look for in the "right" way.</p>
+      </div>
+      <div id="tab_how" class="tab_content">
+        <p>Ahh fuck it. I'll add this content in when I have the structure fleshed out.</p>
+        <p>It should be noted that the grid I've implemented is (theoretically) infinite, so any gliders you loose will just keep on going. This shouldn't be a problematic memory leak (assuming you don't stock up on Glider Guns) as the underlying model only tracks live cells. This does, however, suggest a rather inefficient implementation---it is a web-app, after all---so don't expect anything extraordinary.</p>
+      </div>
     </div>
+  </div>
 
-    <!--This should be renamed to `control_pane` as it's where all the
-        cool CSS buttons and sliders are going to be.
-        TODO: Figure out if CSS or JQuery Sliders are the better
-              choice. I'm guessing it'll be JQuery, as x-browser is 
-              always an issue. Damnit IE6... -->
-    <div id="timer_pane" class="movable_pane">
-        <div class="button_set"><span id="step" class="button">Step</span></div>
-    </div>
+  <!--This should be renamed to `control_pane` as it's where all the
+      cool CSS buttons and sliders are going to be.
+      TODO: Figure out if CSS or JQuery Sliders are the better
+            choice. I'm guessing it'll be JQuery, as x-browser is 
+            always an issue. Damnit IE6... -->
+  <div id="timer_pane" class="movable_pane">
+    <div class="button_set"><span id="step" class="button">Step</span></div>
+  </div>
 
-    <!--TEMPORARY DEBUG PANE
-        As soon as the scripts are solid, this should go away. -->
-    <div id="debug_pane" class="movable_pane">
-        <p>px Offset: <span>&nbsp;</span></p>
-        <p><span></span></p>
-        <p><span></span></p>
-        <p><span></span></p>
-    </div>
+  <!--TEMPORARY DEBUG PANE
+      As soon as the scripts are solid, this should go away. -->
+  <div id="debug_pane" class="movable_pane">
+    <p>px Offset: <span>&nbsp;</span></p>
+    <p><span></span></p>
+    <p><span></span></p>
+    <p><span></span></p>
+  </div>
 
-    <!--And then there was JavaScript. And CoffeeScript too, but it
-        was already compiled, so whatever. -->
-    <script src="./lib/raphael.js"></script>
-    <script src="./lib/jquery-1.7.js"></script>
-    <script src="./lib/underscore.js"></script>
+  <!--And then there was JavaScript. And CoffeeScript too, but it
+      was already compiled, so whatever. -->
+  <script src="./lib/raphael.js"></script>
+  <script src="./lib/jquery-1.7.js"></script>
+  <script src="./lib/underscore.js"></script>
 
-    <script src="./lib/ui/jquery.ui.core.js"></script>
-    <script src="./lib/ui/jquery.ui.widget.js"></script>
-    <script src="./lib/ui/jquery.ui.mouse.js"></script>
-    <script src="./lib/ui/jquery.ui.draggable.js"></script>
-    
-    <script src="./coffee/GoL.coffee.js"></script>
+  <script src="./lib/ui/jquery.ui.core.js"></script>
+  <script src="./lib/ui/jquery.ui.widget.js"></script>
+  <script src="./lib/ui/jquery.ui.mouse.js"></script>
+  <script src="./lib/ui/jquery.ui.draggable.js"></script>
+  
+  <script src="./coffee/GoL.coffee.js"></script>
 </body>
 

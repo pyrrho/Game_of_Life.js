@@ -1,20 +1,34 @@
 # This is identical to `$(document).ready([callback])`
 $( ->
-    window.game_of_life = GoL("#draw_space", $(window).width(), $(window).height()) 
+    window.game_of_life = GoL("#draw_space", $(window).width(), $(window).height())
+
+    ## UI Initialization and setup 
     $(".movable_pane").draggable()
+    
     $("#step").on "click", (event) ->
         game_of_life.step()
         undefined
 
-    $("ul.tab_menu li:first").addClass("active")
+    # Setting the first help_pane tab as open, and showing the related
+    # content
+    $("ul.tab_menu li:first").addClass("open")
     $("div.tab_content:first").show()
 
+    # Setting the callback for clicking on any element of the tab menu
     $("ul.tab_menu li").on "click", (event) ->
-        $("ul.tab_menu li").removeClass("active") #Remove any "active" class
-        $(@).addClass("active") #Add "active" class to selected tab
-        $(".tab_content").hide() #Hide all tab content
-        activeTab = $(@).find("a").attr("href") #Find the rel attribute value to identify the active tab + content
+        # Make sure there aren't any currently open tabs and hide any
+        # currently open content.
+        $("ul.tab_menu li").removeClass("open")
+        $(".tab_content").hide()
+        # Add the `open` class to the selected tab.
+        $(@).addClass("open")
+        # Grab a handle to the tag referenced by the anchor in the tab
+        # and fade that puppy in.
+        activeTab = $(@).find("a").attr("href")
         $(activeTab).fadeIn()
+
+        # Return False to stop propgation of the click event.
         false
+    
     undefined
 )
