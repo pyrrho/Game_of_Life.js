@@ -1,11 +1,9 @@
 body {
     font-family: sans-serif;
-    overflow: hidden;
+    /*overflow: hidden;*/
 }
 
-header { padding-bottom: .2em; }
 
-p { padding-bottom: .4em; }
 
 sub {
     font-size: 80%;
@@ -13,19 +11,32 @@ sub {
     vertical-align: -15%;
 }
 
-li {
+#title_text {
+    font-size: 200%;
+    font-family: serif;
+}
+
+
+/*Movable Panes and their default styling.
+*/
+div.movable_pane {
+    border-radius: 8px;
+    padding: 10px;
+    background-color: rgba(230, 230, 230, 0.8);
+    border: 1px solid #ccc;
+    color: #555;
+}
+
+div.movable_pane p { padding-bottom: .4em; }
+
+div.movable_pane ul {
+    /*list-style: disc inside;*/
+}
+div.movable_pane li {
     list-style: disc inside;
     padding-left: 2em;
     text-indent: -1em;
     padding-bottom: .2em;
-}
-
-.movable_pane {
-    padding: 10px;
-    background-color: rgba(0, 0, 0, 0.6);
-    color: #fff;
-    border-radius: 8px;
-    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
 }
 
 #help_pane {
@@ -44,11 +55,46 @@ li {
     -webkit-user-select: none;
 }
 
-#title_text {
-    font-size: 200%;
-    font-family: serif;
+/*Playing around with (mostly) pure CSS tabs
+  Huh. I guess these aren't goint to be anything more than buttons
+  unless I'm willing to tear up the .moving_pane class some.
+*/
+ul.tab_menu {
+    float:left;
+    height: 2em;
+    /*border-bottom: 1px solid #ccc;*/
+    /*border-left: 1px solid #ccc;*/
+    width: 100%;
+}
+ul.tab_menu li {
+    list-style: none;
+    float: left;
+    /*height: 31px;*/
+    line-height: 2em;
+    /*border: 1px solid #ccc;*/
+    position: relative;
+    text-indent: 0;
+    padding: 0;
+    background-color: rgba(200, 200, 200, 0.8);
+}
+ul.tab_menu li.active, ul.tab_menu li.active a:hover {
+    background-color: rgba(230, 230, 230, 0.8);
+    border-bottom: rgba(230, 230, 230, 0.8);
+}
+ul.tab_menu li a {
+    display: block;
+    text-decoration: none;
+    color: #555;
+    padding: 0px 20px;
+    /*background-color: rgba(180, 180, 180, 0.8);*/
+}
+ul.tab_menu li a:hover {
+    background-color: rgba(0, 230, 0, 0.8);
 }
 
+div.tab_content {
+    display: none;
+}
 /*PLAYING AROUND WITH PURE-CSS BUTTONS
 */
 div.button_set {
@@ -60,7 +106,7 @@ div.button_set span {
     border-radius: .2em;
     background: #c0d0f0;
     font-weight: bold;
-    color: #333333;
+    color: #333;
     border: solid 1px #7088bb;
 }
 div.button_set span:hover, div.button_set span:focus {
