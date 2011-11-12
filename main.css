@@ -54,14 +54,19 @@ div.movable_pane li {
     -webkit-user-select: none;
 }
 
-/*Playing around with (mostly) pure CSS tabs
+/*Playing around with (mostly) pure CSS tabs.
+  Like most of this project, a lot of this code was---if not directly
+  lifted---based heavily on work done by someone else (who then
+  graciously opened that up for me to pick apart). In this case, it's
+  Soh Tanaka whose tabs I based this work off of.
+  http://www.sohtanaka.com/web-design/simple-tabs-w-css-jquery/
 */
 /*First thing to note, this isn't very DRY.
   In theis first `tab_menu`, we're specifying the hight, but we have
   to do so again in `tab_menu li`. Also, here is a really important
   `margin-top. Without it the top *and* bottom borders defined in
   `tab_menu li` (more accurately the negative `margin-top` needed to
-  compinsate) will cause really ugly offsets.*/
+  compensate) will cause really ugly offsets.*/
 ul.tab_menu {
     height: 2em;
     margin-top: 8px;
