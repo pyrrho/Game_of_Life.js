@@ -54,14 +54,21 @@
       TODO: Figure out if CSS or JQuery Sliders are the better
             choice. I'm guessing it'll be JQuery, as x-browser is 
             always an issue. Damnit IE6... -->
-  <div id="timer_pane" class="movable_pane">
-    <div class="button_set"><span id="step" class="button">Step</span></div>
+  <div id="control_pane" class="movable_pane">
+    <p><div class="button_set">
+      <a id="play" class="button">Play</a>
+      <a id="step" class="button">Step</a>
+      <a id="stop" class="button">Stop</a>
+    </div></p>
+    <p>Hz<input id="hz_slide" type="range" min="2" max="50" value="8" />
+         <span id="hz_value">8</span></p>
+    <p><div class="button_set"><a id="reset" class="button">Reset</a></div></p>
   </div>
 
   <!--TEMPORARY DEBUG PANE
       As soon as the scripts are solid, this should go away. -->
   <div id="debug_pane" class="movable_pane">
-    <p>px Offset: <span>&nbsp;</span></p>
+    <p><span></span></p>
     <p><span></span></p>
     <p><span></span></p>
     <p><span></span></p>

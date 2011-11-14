@@ -3,8 +3,6 @@ body {
     overflow: hidden;
 }
 
-
-
 sub {
     font-size: 80%;
     font-style: italic;
@@ -27,7 +25,9 @@ div.movable_pane {
     color: #555;
 }
 
-div.movable_pane p { padding-bottom: .4em; }
+div.movable_pane p {
+padding-bottom: .4em;
+}
 
 div.movable_pane ul {
     list-style: disc inside;
@@ -46,12 +46,10 @@ div.movable_pane li {
     word-wrap: break-word;
 }
 
-#timer_pane {
+#control_pane {
     position: absolute;
     width: 200px;
-    top: 100%; left: 50%;
-    margin-left: -100px; margin-top: -6em;
-    -webkit-user-select: none;
+    top: 40px; right: 40px;
 }
 
 /*Playing around with (mostly) pure CSS tabs.
@@ -126,7 +124,7 @@ div.button_set {
     display: inline-block;
     height: 1.2em;
 }
-div.button_set span {
+div.button_set a {
     padding: .4em;
     border-radius: .2em;
     background: #c0d0f0;
@@ -134,13 +132,13 @@ div.button_set span {
     color: #333;
     border: solid 1px #7088bb;
 }
-div.button_set span:hover, div.button_set span:focus {
+div.button_set a:hover, div.button_set a:focus {
     color:#111111;
     background: #a0b0f0;
     border: solid 1px #666666;
 }
 
-div.button_set span:active {
+div.button_set a:active {
     background: #808BC2;
     border: solid 1px #4050A0;
 }
@@ -150,9 +148,9 @@ This should be entirely temporary.
 */
 #debug_pane {
     position: absolute;
-    top: 20px; right: 20px;
+    top: 70%; right: 20px;
     width: 300px;
-    display: none;
+    /*display: none;*/
 }
 /*
 Example interaction with the debug pane:

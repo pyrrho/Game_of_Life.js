@@ -253,6 +253,10 @@ GoL = (canvas_element, width, height) ->
             ret.view.resizeGrid($(window).width(), $(window).height())
             undefined
             ), 90
+
+        $("#hz_slide").on "change", (event) ->
+            $("#hz_value").text this.value
+            false
         undefined
     )()
 
