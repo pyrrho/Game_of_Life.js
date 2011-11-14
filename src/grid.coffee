@@ -34,7 +34,7 @@ GoL = (canvas_element, width, height) ->
 
     ret.model.raiseCell = (x, y) ->
         @live_cells[x] ?= {}
-        @live_cells[x][y] = 0
+        @live_cells[x][y] = state_set.alive
         @cell_count += 1
         ret.view.colorRect x, y, state_set.alive
         undefined
@@ -94,7 +94,7 @@ GoL = (canvas_element, width, height) ->
     #############################
     ## View                     #
     #############################
-    node_size = 30
+    node_size = 15
 
     # We're assuming that `canvas_element` is going to be in the form
     # `"#html_id"`, and for some reason Raphael wants to look for it in
@@ -103,6 +103,10 @@ GoL = (canvas_element, width, height) ->
 
     ret.view.grid_offset = x: 0, y:0
     ret.view.px_offset = x:0, y:0
+    ret.view.width = 0
+    ret.view.height = 0
+    ret.view.node_cols = 0
+    ret.view.node_rows = 0
 
     #Public Methods
     ret.view.resizeGrid = (@width, @height) ->
@@ -138,33 +142,50 @@ GoL = (canvas_element, width, height) ->
                 @grid_offset.y += Math.ceil(@px_offset.y / node_size)
             @px_offset.y = @px_offset.y % node_size
 
+        $("#debug_pane p span:eq(1)").text "G_X:#{@grid_offset.x} G_Y:#{@grid_offset.y}"
         _.defer => @drawGrid()
         undefined
         
     ret.view.drawGrid = _.throttle((() ->
-        #So, we're gonna go for the brute-force here. I feel like
-        #that's a pretty bad idea, but... premature optimizations and
-        #all that.
+        #New plan. Instead of drawing every rectangle, I'm gonna just
+        #horizontal and vertical lines that run the entire width or
+        #length of the page, then go through the list of live cells
+        #to find out if one needs be rendered.
         @paper.clear()
-
         @rects = []
-        for i in [-1..@node_cols]
-            @rects[i] = []
-            for j in [-1..@node_rows]
-                temp =  @paper.rect i * node_size + @px_offset.x, 
-                                    j * node_size + @px_offset.y,
-                                    node_size, node_size
-                attrs = {}
-                if ret.model.live_cells[i-@grid_offset.x]?[j-@grid_offset.y]?
-                    attrs = state_set.alive
-                else
-                    attrs = state_set.empty
-                temp.attr(attrs)
-                @rects[i][j] = temp
+
+        for i in [0..@node_cols]
+            #Not a fan of this notation. 
+            #M means `moveto`, L means `lineto`, and the lowercase
+            #relative instructions don't seem to be working.
+            @paper.path("M#{i * node_size + @px_offset.x},0" +
+                       "L#{i * node_size + @px_offset.x},#{@height}")
+                        .attr "stroke-opacity": .2
+        for j in [0..@node_rows]
+            @paper.path("M0,#{j * node_size + @px_offset.y}" +
+                        "L#{@width},#{j * node_size + @px_offset.y}")
+                .attr "stroke-opacity": .2
+
+        for x in [-@grid_offset.x-1 ... @node_cols-@grid_offset.x]
+            if ret.model.live_cells[x]?
+            #An interesting heuristic. Do we iterate over all the live
+            #cells in the model's column (an arbitrary number that
+            #will _probably_ stay small) or do we iterate over the
+            #number of rows being displayed?
+            #I'm gonna go with the later, since I can cap its max
+                for y in [-@grid_offset.y-1 ... @node_rows-@grid_offset.y]
+                    @colorRect x, y, ret.model.live_cells[x][y] if ret.model.live_cells[x][y]?
         undefined), 3)
 
     ret.view.colorRect = (x, y, state) ->
-        @rects[x+@grid_offset.x]?[y+@grid_offset.y]?.attr state
+        grid_x = x + @grid_offset.x
+        grid_y = y + @grid_offset.y
+
+        @rects[grid_x] ?= []
+        @rects[grid_x][grid_y] ?= @paper.rect(grid_x * node_size + @px_offset.x,
+                                              grid_y * node_size + @px_offset.y,
+                                              node_size, node_size)
+        @rects[grid_x][grid_y].attr state
         undefined
 
     ret.view.pageToGrid = (page_x, page_y) ->
@@ -180,7 +201,6 @@ GoL = (canvas_element, width, height) ->
     ret.ctrl.resolveMousedown = (page_x, page_y) ->
         @last = x: page_x, y: page_y
         @moved = false
-        @mouse_down = true
         undefined
     
     ret.ctrl.resolveMousemove = (page_x, page_y) ->
@@ -196,8 +216,7 @@ GoL = (canvas_element, width, height) ->
         undefined
     
     ret.ctrl.resolveMouseup = (page_x, page_y) ->
-        if @mouse_down and not @moved
-            @mouse_down = false
+        if not @moved
             grid = ret.view.pageToGrid(page_x, page_y)
             x = grid.x - ret.view.grid_offset.x
             y = grid.y - ret.view.grid_offset.y
@@ -205,6 +224,8 @@ GoL = (canvas_element, width, height) ->
                 ret.model.killCell x, y
             else
                 ret.model.raiseCell x, y
+            $("#debug_pane p span:eq(2)").text "Click G X:#{grid.x} Y:#{grid.y}"
+            $("#debug_pane p span:eq(3)").text "::::::::::::: X:#{x} Y:#{y}"
         undefined
 
 
@@ -220,8 +241,8 @@ GoL = (canvas_element, width, height) ->
             ret.ctrl.resolveMousedown event.pageX, event.pageY
             $raphael.on "mousemove", (event) =>
                 ret.ctrl.resolveMousemove event.pageX, event.pageY
-                undefined
-            undefined
+                false
+            false
         $(window).on "mouseup", (event) =>
             $raphael.off "mousemove"
             ret.ctrl.resolveMouseup event.pageX, event.pageY
