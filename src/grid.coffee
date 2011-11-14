@@ -34,14 +34,16 @@ GoL = (canvas_element, width, height) ->
 
     ret.model.raiseCell = (x, y) ->
         @live_cells[x] ?= {}
-        @live_cells[x][y] = state_set.alive
+        @live_cells[x][y] = 0
         @cell_count += 1
+        $("#debug_pane p span:eq(6)").text @cell_count
         ret.view.colorRect x, y, state_set.alive
         undefined
 
     ret.model.killCell = (x, y) ->
         delete @live_cells[x][y]
         @cell_count -= 1
+        $("#debug_pane p span:eq(6)").text @cell_count
         if $.isEmptyObject @live_cells[x]
             delete @live_cells[x]
         ret.view.colorRect x, y, state_set.empty
@@ -174,7 +176,7 @@ GoL = (canvas_element, width, height) ->
             #number of rows being displayed?
             #I'm gonna go with the later, since I can cap its max
                 for y in [-@grid_offset.y-1 ... @node_rows-@grid_offset.y]
-                    @colorRect x, y, ret.model.live_cells[x][y] if ret.model.live_cells[x][y]?
+                    @colorRect x, y, state_set.alive if ret.model.live_cells[x][y]?
         undefined), 3)
 
     ret.view.colorRect = (x, y, state) ->
