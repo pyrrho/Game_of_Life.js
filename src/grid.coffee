@@ -254,14 +254,27 @@ GoL = (canvas_element, width, height) ->
             undefined
             ), 90
 
-        $("#hz_slide").on "change", (event) ->
-            $("#hz_value").text this.value
-            false
+        $("#hz_slide").slider(
+            min: 4
+            max: 50
+            value: 8
+            step: 1
+            change: (event, ui) ->
+                $("#hz_value").text ui.value
+                undefined
+            )     
+
+        #$("#hz_slide").on "change", (event, ui) =>
+        #    $("#hz_value").text ui.value
         undefined
     )()
 
     ret.step = () ->
         ret.model.step()
+        undefined
+
+    ret.setHz = (hz) ->
+        ret.ctrl.setHz hz
         undefined
 
     ret.view.resizeGrid(width, height)

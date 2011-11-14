@@ -7,6 +7,7 @@
 
   <link rel="stylesheet" href="./reset.css" />
   <link rel="stylesheet" href="./main.css" />
+  <link rel="stylesheet" href="./lib/themes/jquery.ui.all.css" />
 </head>
 
 <body>
@@ -60,8 +61,9 @@
       <a id="step" class="button">Step</a>
       <a id="stop" class="button">Stop</a>
     </div></p>
-    <p>Hz<input id="hz_slide" type="range" min="2" max="50" value="8" />
-         <span id="hz_value">8</span></p>
+    <!-- <p><input type="range" id="hz_slide" min="4" max="50" value="8" /> -->
+    <p><div id="hz_slide"></div>
+         <span id="hz_value">8</span> hz</p>
     <p><div class="button_set"><a id="reset" class="button">Reset</a></div></p>
   </div>
 
@@ -93,6 +95,7 @@
   <script src="./lib/ui/jquery.ui.widget.js"></script>
   <script src="./lib/ui/jquery.ui.mouse.js"></script>
   <script src="./lib/ui/jquery.ui.draggable.js"></script>
+  <script src="./lib/ui/jquery.ui.slider.js"></script>
   
   <script src="./coffee/GoL.coffee.js"></script>
 </body>

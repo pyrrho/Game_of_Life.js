@@ -51,6 +51,12 @@ div.movable_pane li {
     width: 200px;
     top: 40px; right: 40px;
 }
+#hz_slide {
+    display: inline-block;
+    /*/*padding: 4px;*/
+    width: 70%;
+    /*height: 1em;*/
+}
 
 /*Playing around with (mostly) pure CSS tabs.
   Like most of this project, a lot of this code was---if not directly
