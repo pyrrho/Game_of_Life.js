@@ -200,6 +200,11 @@ GoL = (canvas_element, width, height) ->
     #############################
     scroll_threshold = 15
 
+    ret.ctrl.moved = false
+    ret.ctrl.lat = x: 0, y: 0
+    ret.ctrl.hz = 8
+    ret.ctrl.running = undefined
+
     ret.ctrl.resolveMousedown = (page_x, page_y) ->
         @last = x: page_x, y: page_y
         @moved = false
@@ -230,6 +235,22 @@ GoL = (canvas_element, width, height) ->
             $("#debug_pane p span:eq(3)").text "::::::::::::: X:#{x} Y:#{y}"
         undefined
 
+    ret.ctrl.setHz = (hz) ->
+        @hz = hz
+        if @running?
+            clearTimeout(@running)
+            @running = setInterval (=> ret.model.step()), 1000/@hz
+        undefined
+
+    ret.ctrl.start = () ->
+        @running ?= setInterval (=> ret.model.step()), 1000/@hz
+        undefined
+
+    ret.ctrl.stop = () ->
+        clearTimeout(@running)
+        #KLUDGE
+        delete(@running)
+        undefined
 
     #############################
     ## HTML interactions. Final view calls. Return #
@@ -253,29 +274,21 @@ GoL = (canvas_element, width, height) ->
             ret.view.resizeGrid($(window).width(), $(window).height())
             undefined
             ), 90
-
-        $("#hz_slide").slider(
-            min: 4
-            max: 50
-            value: 8
-            step: 1
-            change: (event, ui) ->
-                $("#hz_value").text ui.value
-                undefined
-            )     
-
-        #$("#hz_slide").on "change", (event, ui) =>
-        #    $("#hz_value").text ui.value
         undefined
     )()
 
-    ret.step = () ->
+    ret.step = () =>
         ret.model.step()
         undefined
 
-    ret.setHz = (hz) ->
-        ret.ctrl.setHz hz
-        undefined
+    ret.start = () =>
+        ret.ctrl.start()
+
+    ret.stop = () =>
+        ret.ctrl.stop()
+    
+    ret.setHz = (hz) =>
+        ret.ctrl.setHz(hz)
 
     ret.view.resizeGrid(width, height)
 

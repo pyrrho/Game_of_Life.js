@@ -9,6 +9,25 @@ $( ->
         game_of_life.step()
         undefined
 
+    $("#play").on "click", (event) ->
+        game_of_life.start()
+        undefined
+
+    $("#stop").on "click", (event) ->
+        game_of_life.stop()
+        undefined
+
+    $("#hz_slide").slider(
+        min: 4
+        max: 50
+        value: 8
+        step: 1
+        change: (event, ui) ->
+            $("#hz_value").text ui.value
+            game_of_life.setHz ui.value
+            undefined
+        )
+
     # Setting the first help_pane tab as open, and showing the related
     # content
     $("ul.tab_menu li:first").addClass("open")
