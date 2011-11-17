@@ -17,33 +17,23 @@ sub {
 
 /*Movable Panes and their default styling.
 */
-div.movable_pane {
-    border-radius: 8px;
+div.content_pane {
+    border-radius: 4px;
     padding: 10px;
-    background-color: rgba(230, 230, 230, 0.8);
-    border: 1px solid #ccc;
-    color: #555;
+    background: rgba(153,162,172,.8);
 }
 
-div.movable_pane p {
-padding-bottom: .4em;
+div.content_pane p {
+    padding-bottom: .4em;
 }
 
-div.movable_pane ul {
+div.content_pane ul {
     list-style: disc inside;
 }
-div.movable_pane li {
+div.content_pane li {
     padding-left: 2em;
     text-indent: -1em;
     padding-bottom: .2em;
-}
-
-#help_pane {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    width: 300px;
-    word-wrap: break-word;
 }
 
 #control_pane {
@@ -56,71 +46,68 @@ div.movable_pane li {
     width: 70%;
 }
 
-/*Playing around with (mostly) pure CSS tabs.
-  Like most of this project, a lot of this code was---if not directly
-  lifted---based heavily on work done by someone else (who then
-  graciously opened that up for me to pick apart). In this case, it's
-  Soh Tanaka.
-  http://www.sohtanaka.com/web-design/simple-tabs-w-css-jquery/
+/* Help Pane specifics, Pure CSS tabs.
 */
+#help_pane {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 300px;
+    word-wrap: break-word;
+}
+
 ul.tab_menu {
-    height: 2em; /*Menu tab height*/
-    margin-top: 2px; /*Border Width + whatever else*/
-    margin-left: 8px; /*Border Radius + whatever else*/
-}
-ul.tab_menu li {
-    list-style: none;
-    text-indent: 0px;
-    padding: 0px;
-    line-height: 2em; /*Menu tab height, again*/
-    float: left; 
-    position: relative;
-    background-color: #efefef;
-    margin-top: -2px; /*Border width*/
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-    border-top: 2px solid #ccc; /*this + padding-top === Border Width*/
-    border-bottom: 2px solid #ccc; /*Border width*/
-    border-right: 1px solid #ccc; /*Not strictly necessary, but looks better*/
-    border-left: 1px solid #ccc; /*Not strictly necessary, but looks better*/
-}
-ul.tab_menu li:first-child {
-    border-left: 2px solid #ccc; /*Accounting for smaller left/right defaults*/
-}
-ul.tab_menu li:last-child {
-    border-right: 2px solid #ccc; /*Accounting for smaller left/right defaults*/
-}
-/*Change the background while the mouse is hovering.*/
-ul.tab_menu li:hover {
-    background-color: #bbb;
-
-}
-/*Set the backgrond to the color of the container, regardless of mouse
-  position.*/
-ul.tab_menu li.open, ul.tab_menu li.open:hover {
-    background-color: #fff;
-    border-bottom: 2px solid #fff;
-}
-/*Menu tab Text styling*/
-ul.tab_menu li a {
+    width: 20px;
+    float: left;
     display: block;
+    text-align: left;
+    margin-top: 30px;
+}
+ul.tab_menu a {
     text-decoration: none;
-    color: #555;
-    padding: 0px 20px;
+    font-variant: small-caps;
+    color: #ccc;
 }
 
-/*Tab container styling*/
-div.tab_container {
-    border: 2px solid #ccc; /* Border Width */
-    border-radius: 8px; /* Border Radius */
-    background-color: #fff;
-    padding: .6em;
+ul.tab_menu li {
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+    /*border-top-right-radius: 2px;*/
+    /*border-bottom-right-radius: 2px;*/
+    /*border-radius: 12px;*/
+    padding: 20px 4px;
+    background: rgba(181,189,200,.8);
+    -webkit-transition: all .25s linear;
 }
-/*By default, don't display any of the content text*/
+ul.tab_menu li.open {
+    margin-right: -8px;
+    margin-left: -2px;
+    padding-right: 6px;
+    background: rgba(68,79,87,.8);   
+    border-right: 6px solid #EEE;
+    -webkit-transition: all .25s linear;
+
+}
+
+ul.tab_menu li:hover {
+    background: rgba(68,79,87,.8);
+    margin-left: -8px;
+    -webkit-transition: all .25s linear;
+}
+ul.tab_menu li.open:hover {
+    margin-left: -2px;
+}
+
+div.tab_container {
+    float: right;
+    width: 255px;
+    min-height: 350px;
+    display: block;
+    padding-left: 15px;
+}
 div.tab_content {
     display: none;
 }
-
 
 /*PLAYING AROUND WITH PURE-CSS BUTTONS
 */
@@ -154,9 +141,17 @@ This should be entirely temporary.
     position: absolute;
     top: 70%; right: 20px;
     width: 300px;
-    /*display: none;*/
+    display: none;
 }
 /*
 Example interaction with the debug pane:
     $("#debug_pane p span:eq(0)").text "This wll get rendered"
+*/
+
+/*Playing around with (mostly) pure CSS tabs.
+  Like most of this project, a lot of this code was---if not directly
+  lifted---based heavily on work done by someone else (who then
+  graciously opened that up for me to pick apart). In this case, it's
+  Soh Tanaka.
+  http://www.sohtanaka.com/web-design/simple-tabs-w-css-jquery/
 */

@@ -17,13 +17,8 @@
 
   <!--The Help Pane here is where the basics are explained. -->
   <div id="help_pane" class="movable_pane">
-    <h1><sub>my</sub>Game of Life</h1>
-      <ul class="tab_menu">
-        <li><a href="#tab_what">What?</a></li>
-        <li><a href="#tab_why">Why?</a></li>
-        <li><a href="#tab_how">How?</a></li>
-      </ul>
-    <div class="tab_container">
+    <div class="tab_container content_pane">
+      <h1><sub>my</sub>Game of Life</h1>
       <div id="tab_what" class="tab_content">
         <p>This is my crack at a JavaScript-backed implementation of John Conway's ageless <a href="http://en.wikipedia.org/wiki/Conway's_Game_of_Life">Game of Life.</a></p>
         <ul>The rules---as much for my benefit as yours---are as follows: Every generation
@@ -41,13 +36,24 @@
         </ul>
       </div>
       <div id="tab_why" class="tab_content">
-        <p>I've put this whole thing for my own edification. It was an experiment designed solely to glean a familiarity with CoffeeScript (and, as a result, JavaScript), HTML5 and CSS3. I wanted to do as much of the formatting---structure, typography, visual flare---in HTML and CSS less so that I can learn the old way of putting web pages together, but so that I know what to look for in the "right" way.</p>
+        <p>I've put this whole thing for my own edification. It was an
+           experiment designed solely to glean a familiarity with
+           CoffeeScript (and, as a result, JavaScript), HTML5 and
+           CSS3. I wanted to do as much of the formatting---structure,
+           typography, visual flare---in HTML and CSS less so that I
+           can learn the old way of putting web pages together, but so
+           that I know what to look for in the "right" way.</p>
       </div>
       <div id="tab_how" class="tab_content">
         <p>Ahh fuck it. I'll add this content in when I have the structure fleshed out.</p>
         <p>It should be noted that the grid I've implemented is (theoretically) infinite, so any gliders you loose will just keep on going. This shouldn't be a problematic memory leak (assuming you don't stock up on Glider Guns) as the underlying model only tracks live cells. This does, however, suggest a rather inefficient implementation---it is a web-app, after all---so don't expect anything extraordinary.</p>
       </div>
     </div>
+    <ul class="tab_menu">
+      <li><a href="#tab_what">W<br />h<br />a<br />t</a></li>
+      <li><a href="#tab_why">W<br />h<br />y</a></li>
+      <li><a href="#tab_how">H<br />o<br />w</a></li>
+    </ul>
   </div>
 
   <!--This should be renamed to `control_pane` as it's where all the
@@ -55,10 +61,10 @@
       TODO: Figure out if CSS or JQuery Sliders are the better
             choice. I'm guessing it'll be JQuery, as x-browser is 
             always an issue. Damnit IE6... -->
-  <div id="control_pane" class="movable_pane">
+  <div id="control_pane" class="movable_pane content_pane">
     <p><div class="button_set">
-      <a id="play" class="button">Play</a>
       <a id="step" class="button">Step</a>
+      <a id="start" class="button">Start</a>
       <a id="stop" class="button">Stop</a>
     </div></p>
     <!-- <p><input type="range" id="hz_slide" min="4" max="50" value="8" /> -->
