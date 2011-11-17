@@ -92,6 +92,11 @@ GoL = (canvas_element, width, height) ->
                     @raiseCell(x, y)
         undefined
 
+    ret.model.reset = () ->
+        ret.model.current_step = 0
+        ret.model.cell_count = 0
+        ret.model.live_cells = {}
+
 
     #############################
     ## View                     #
@@ -248,9 +253,11 @@ GoL = (canvas_element, width, height) ->
 
     ret.ctrl.stop = () ->
         clearTimeout(@running)
-        #KLUDGE
         delete(@running)
         undefined
+
+    ret.ctrl.reset = () ->
+        @.stop()
 
     #############################
     ## HTML interactions. Final view calls. Return #
@@ -289,6 +296,11 @@ GoL = (canvas_element, width, height) ->
     
     ret.setHz = (hz) =>
         ret.ctrl.setHz(hz)
+
+    ret.reset = () =>
+        ret.ctrl.reset()
+        ret.model.reset()
+        ret.view.drawGrid()
 
     ret.view.resizeGrid(width, height)
 
