@@ -1,3 +1,5 @@
+/*GENERAL STYLES
+-----*/
 body {
     font-family: Arial, Verdana, sans-serif;
     overflow: hidden;
@@ -9,14 +11,7 @@ sub {
     vertical-align: -15%;
 }
 
-#title_text {
-    font-size: 200%;
-    font-family: serif;
-}
-
-
-/*Movable Panes and their default styling.
-*/
+// Movable Panes and their default styling.
 div.content_pane {
     border-radius: 12px;
     padding: 10px;
@@ -36,85 +31,20 @@ div.content_pane li {
     padding-bottom: .2em;
 }
 
+/*CONTROL PANE
+-----*/
 #control_pane {
     position: absolute;
     width: 200px;
     top: 40px; right: 40px;
 }
+//This damn slider...
 #hz_slide {
     display: inline-block;
     width: 70%;
 }
 
-/* Help Pane specifics, Pure CSS tabs.
-*/
-#help_pane {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    width: 300px;
-    word-wrap: break-word;
-}
-
-ul.tab_menu {
-    width: 20px;
-    float: left;
-    display: block;
-    text-align: center;
-    margin-top: 30px;
-}
-ul.tab_menu a {
-    text-decoration: none;
-    font-variant: small-caps;
-    color: #eee;
-}
-
-ul.tab_menu li {
-    border-top-left-radius: 12px;
-    border-bottom-left-radius: 12px;
-    padding: 16px 4px;
-    background: rgba(181,189,200,.8);
-    -webkit-transition: all .25s ease;
-}
-ul.tab_menu li.open {
-    // margin-right: -8px;
-    // margin-left: -2px;
-    // padding-right: 12px;
-    background: rgba(68,79,87,.8);
-    margin-top: -2px; margin-bottom: 2px;
-    box-shadow: 0px 1px 6px rgba(0, 0, 0, .6);
-    // border-right: 6px solid #EEE;
-    -webkit-transition: all .25s ease;
-}
-
-ul.tab_menu li:hover {
-    background: rgba(125,133,144,.8);
-    margin-top: -2px; margin-bottom: 2px;
-    margin-left: -4px; margin-right: 4px;
-    box-shadow:2px 2px 8px rgba(0,0,0,.6);
-    -webkit-transition: all .25s ease;
-}
-ul.tab_menu li.open:hover {
-    background: rgba(68,79,87,.8);
-    margin-left: 0px; margin-right: 0px;
-    margin-top: -2px; margin-bottom: 2px;
-    box-shadow: 0px 1px 6px rgba(0, 0, 0, .6);
-}
-
-div.tab_container {
-    float: right;
-    width: 255px;
-    min-height: 350px;
-    display: block;
-    padding-left: 15px;
-}
-div.tab_content {
-    display: none;
-}
-
-/*PLAYING AROUND WITH PURE-CSS BUTTONS
-*/
-div.button_set {
+div.button_set { //Pure CSS buttons.
     display: inline-block;
     height: 1.2em;
 }
@@ -126,35 +56,112 @@ div.button_set a {
     color: #333;
     border: solid 1px #7088bb;
 }
-div.button_set a:hover, div.button_set a:focus {
+div.button_set a:hover {
     color:#111111;
     background: #a0b0f0;
     border: solid 1px #666666;
 }
 
-div.button_set a:active {
+div.button_set a:active { //I don't think I'm actually using this...
     background: #808BC2;
     border: solid 1px #4050A0;
 }
 
+
+/*HELP PANE
+-----*/
+#help_pane {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 300px;
+    word-wrap: break-word;
+}
+
+// Pure CSS tabs
+// Based on Soh Tanaka's CSS tabs.
+// http://www.sohtanaka.com/web-design/simple-tabs-w-css-jquery/
+ul.tab_menu {
+    width: 20px;
+    float: left;
+    display: block;
+    text-align: center;
+    margin-top: 30px;
+}
+ul.tab_menu a { //Tab menu text style
+    text-decoration: none;
+    font-variant: small-caps;
+    color: #eee;
+}
+
+ul.tab_menu li { //General tab style
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+    padding: 16px 4px;
+    background: rgba(181,189,200,.8);
+    -webkit-transition: all .25s ease;
+}
+ul.tab_menu li.open {
+    background: rgba(68,79,87,.8);
+    margin-top: -2px; margin-bottom: 2px;
+    box-shadow: 0px 1px 6px rgba(0, 0, 0, .6);
+    -webkit-transition: all .25s ease;
+}
+
+ul.tab_menu li:hover {
+    background: rgba(125,133,144,.8);
+    margin-top: -2px; margin-bottom: 2px;
+    margin-left: -4px; margin-right: 4px;
+    box-shadow:2px 2px 8px rgba(0,0,0,.6);
+    -webkit-transition: all .25s ease;
+}
+ul.tab_menu li.open:hover { //Here to make sure open tabs don't hover
+    background: rgba(68,79,87,.8);
+    margin-left: 0px; margin-right: 0px;
+    margin-top: -2px; margin-bottom: 2px;
+    box-shadow: 0px 1px 6px rgba(0, 0, 0, .6);
+}
+
+div.tab_container { //Tab Content style
+    float: right;
+    width: 255px;
+    min-height: 350px;
+    display: block;
+    padding-left: 15px;
+}
+div.tab_content { //Hiding all tab content so JQuery can come in and
+                  //reveal only what we want to see.
+    display: none;
+}
+
+
+/*FOOTER
+-----*/
+//Yeah. I totally lifted this straight from Xueqiao Xu. That's how
+//much I love it.
+footer {
+    color: #333;
+    font-size: 70%;
+    text-align: center;
+    position: absolute;
+    width: 200px;
+    bottom: 10px;
+    left: 50%;
+    margin-left: -100px;
+    background: rgba(255, 255, 255, 0.5);
+    padding: 5px;
+    border-radius: 5px;
+}
+
+
 /*DEBUG PANE
-This should be entirely temporary.
-*/
+-----*/
+//This should be entirely temporary.
 #debug_pane {
     position: absolute;
     top: 70%; right: 20px;
     width: 300px;
     display: none;
 }
-/*
-Example interaction with the debug pane:
-    $("#debug_pane p span:eq(0)").text "This wll get rendered"
-*/
-
-/*Playing around with (mostly) pure CSS tabs.
-  Like most of this project, a lot of this code was---if not directly
-  lifted---based heavily on work done by someone else (who then
-  graciously opened that up for me to pick apart). In this case, it's
-  Soh Tanaka.
-  http://www.sohtanaka.com/web-design/simple-tabs-w-css-jquery/
-*/
+// Example interaction with the debug pane:
+//    $("#debug_pane p span:eq(0)").text "This wll get rendered"
