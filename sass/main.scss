@@ -18,7 +18,7 @@ sub {
 /*Movable Panes and their default styling.
 */
 div.content_pane {
-    border-radius: 4px;
+    border-radius: 12px;
     padding: 10px;
     background: rgba(153,162,172,.8);
 }
@@ -60,42 +60,45 @@ ul.tab_menu {
     width: 20px;
     float: left;
     display: block;
-    text-align: left;
+    text-align: center;
     margin-top: 30px;
 }
 ul.tab_menu a {
     text-decoration: none;
     font-variant: small-caps;
-    color: #ccc;
+    color: #eee;
 }
 
 ul.tab_menu li {
     border-top-left-radius: 12px;
     border-bottom-left-radius: 12px;
-    /*border-top-right-radius: 2px;*/
-    /*border-bottom-right-radius: 2px;*/
-    /*border-radius: 12px;*/
-    padding: 20px 4px;
+    padding: 16px 4px;
     background: rgba(181,189,200,.8);
-    -webkit-transition: all .25s linear;
+    -webkit-transition: all .25s ease;
 }
 ul.tab_menu li.open {
-    margin-right: -8px;
-    margin-left: -2px;
-    padding-right: 6px;
-    background: rgba(68,79,87,.8);   
-    border-right: 6px solid #EEE;
-    -webkit-transition: all .25s linear;
-
+    // margin-right: -8px;
+    // margin-left: -2px;
+    // padding-right: 12px;
+    background: rgba(68,79,87,.8);
+    margin-top: -2px; margin-bottom: 2px;
+    box-shadow: 0px 1px 6px rgba(0, 0, 0, .6);
+    // border-right: 6px solid #EEE;
+    -webkit-transition: all .25s ease;
 }
 
 ul.tab_menu li:hover {
-    background: rgba(68,79,87,.8);
-    margin-left: -8px;
-    -webkit-transition: all .25s linear;
+    background: rgba(125,133,144,.8);
+    margin-top: -2px; margin-bottom: 2px;
+    margin-left: -4px; margin-right: 4px;
+    box-shadow:2px 2px 8px rgba(0,0,0,.6);
+    -webkit-transition: all .25s ease;
 }
 ul.tab_menu li.open:hover {
-    margin-left: -2px;
+    background: rgba(68,79,87,.8);
+    margin-left: 0px; margin-right: 0px;
+    margin-top: -2px; margin-bottom: 2px;
+    box-shadow: 0px 1px 6px rgba(0, 0, 0, .6);
 }
 
 div.tab_container {
