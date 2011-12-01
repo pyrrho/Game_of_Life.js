@@ -11,24 +11,39 @@ sub {
     vertical-align: -15%;
 }
 
-// Movable Panes and their default styling.
+/*MOVABLE PANES
+-----*/
+$content_bg_color: rgba(68,79,87,.8);
+$text_color: rgb(0,0,0);
+
 div.content_pane {
     border-radius: 12px;
     padding: 10px;
-    background: rgba(153,162,172,.8);
-}
+    background: $content_bg_color;
 
-div.content_pane p {
-    padding-bottom: .4em;
-}
+    p {
+        padding-bottom: .4em;
+    }
 
-div.content_pane ul {
-    list-style: disc inside;
-}
-div.content_pane li {
-    padding-left: 2em;
-    text-indent: -1em;
-    padding-bottom: .2em;
+    strong {
+        font-weight: bold;
+    }
+
+    a {
+        color: $text_color;
+        font-variant: small-caps;
+        // text-decoration: none;
+    }
+
+    ul {
+        list-style: none inside;
+    }
+    li {
+        padding-left: 2em;
+        // text-indent: -1em;
+        padding-bottom: .2em;
+
+    }
 }
 
 /*CONTROL PANE
@@ -42,29 +57,30 @@ div.content_pane li {
 #hz_slide {
     display: inline-block;
     width: 70%;
+    margin-right: .4em;
 }
 
 div.button_set { //Pure CSS buttons.
     display: inline-block;
     height: 1.2em;
-}
-div.button_set a {
-    padding: .4em;
-    border-radius: .2em;
-    background: #c0d0f0;
-    font-weight: bold;
-    color: #333;
-    border: solid 1px #7088bb;
-}
-div.button_set a:hover {
-    color:#111111;
-    background: #a0b0f0;
-    border: solid 1px #666666;
-}
 
-div.button_set a:active { //I don't think I'm actually using this...
-    background: #808BC2;
-    border: solid 1px #4050A0;
+    a {
+        padding: .4em;
+        border-radius: .2em;
+        background: #c0d0f0;
+        font-weight: bold;
+        color: #333;
+        border: solid 1px #7088bb;
+    }
+    a:hover {
+        color:#111111;
+        background: #a0b0f0;
+        border: solid 1px #666666;
+    }
+    a:active { //I don't think I'm actually using this...
+        background: #808BC2;
+        border: solid 1px #4050A0;
+    }
 }
 
 
@@ -81,45 +97,52 @@ div.button_set a:active { //I don't think I'm actually using this...
 // Pure CSS tabs
 // Based on Soh Tanaka's CSS tabs.
 // http://www.sohtanaka.com/web-design/simple-tabs-w-css-jquery/
+$tab_open_color: rgba(68,79,87,.8);
+$tab_hover_color: rgba(125,133,144,.8);
+$tab_idle_color: rgba(181,189,200,.8);
+
+@mixin open_tab_base {
+    background: $tab_open_color;
+    margin-top: -2px; margin-bottom: 2px;
+    // box-shadow: -2px 1px 4px rgba(0, 0, 0, .6);
+}
 ul.tab_menu {
     width: 20px;
     float: left;
     display: block;
     text-align: center;
     margin-top: 30px;
-}
-ul.tab_menu a { //Tab menu text style
-    text-decoration: none;
-    font-variant: small-caps;
-    color: #eee;
-}
+    cursor: pointer;
 
-ul.tab_menu li { //General tab style
-    border-top-left-radius: 12px;
-    border-bottom-left-radius: 12px;
-    padding: 16px 4px;
-    background: rgba(181,189,200,.8);
-    -webkit-transition: all .25s ease;
-}
-ul.tab_menu li.open {
-    background: rgba(68,79,87,.8);
-    margin-top: -2px; margin-bottom: 2px;
-    box-shadow: 0px 1px 6px rgba(0, 0, 0, .6);
-    -webkit-transition: all .25s ease;
-}
+    a { //Tab menu text style
+        text-decoration: none;
+        font-variant: small-caps;
+        color: #eee;
+    }
 
-ul.tab_menu li:hover {
-    background: rgba(125,133,144,.8);
-    margin-top: -2px; margin-bottom: 2px;
-    margin-left: -4px; margin-right: 4px;
-    box-shadow:2px 2px 8px rgba(0,0,0,.6);
-    -webkit-transition: all .25s ease;
-}
-ul.tab_menu li.open:hover { //Here to make sure open tabs don't hover
-    background: rgba(68,79,87,.8);
-    margin-left: 0px; margin-right: 0px;
-    margin-top: -2px; margin-bottom: 2px;
-    box-shadow: 0px 1px 6px rgba(0, 0, 0, .6);
+    li { //Tab style
+        border-top-left-radius: 12px;
+        border-bottom-left-radius: 12px;
+        padding: 16px 4px;
+        background: lighten($tab_open_color, 30%);
+        box-shadow: 0px 0px 0px rgba(0, 0, 0, .6);
+        -webkit-transition: all .25s ease;
+    }
+    li:hover {
+        background: lighten($tab_open_color, 15%);
+        margin-top: -2px; margin-bottom: 2px;
+        margin-left: -4px; margin-right: 4px;
+        box-shadow:-1px 2px 8px rgba(0,0,0,.6);
+        -webkit-transition: all .25s ease;
+    }
+    li.open {
+        @include open_tab_base;
+        -webkit-transition: all .25s ease;
+    }
+    li.open:hover { //Here to make sure open tabs don't hover
+        @include open_tab_base;
+        margin-left: 0px; margin-right: 0px;
+    }
 }
 
 div.tab_container { //Tab Content style
