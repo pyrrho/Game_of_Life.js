@@ -22,6 +22,10 @@ $( ->
         max: 50
         value: 8
         step: 1
+        slide: (event, ui) ->
+            $("#hz_value").text ui.value
+            game_of_life.setHz ui.value
+            undefined
         change: (event, ui) ->
             $("#hz_value").text ui.value
             game_of_life.setHz ui.value
