@@ -36,14 +36,14 @@ GoL = (canvas_element, width, height) ->
         @live_cells[x] ?= {}
         @live_cells[x][y] = 0
         @cell_count += 1
-        $("#debug_pane p span:eq(6)").text @cell_count
+        #$("#debug_pane p span:eq(6)").text @cell_count
         ret.view.colorRect x, y, state_set.alive
         undefined
 
     ret.model.killCell = (x, y) ->
         delete @live_cells[x][y]
         @cell_count -= 1
-        $("#debug_pane p span:eq(6)").text @cell_count
+        #$("#debug_pane p span:eq(6)").text @cell_count
         if $.isEmptyObject @live_cells[x]
             delete @live_cells[x]
         ret.view.colorRect x, y, state_set.empty
@@ -133,7 +133,7 @@ GoL = (canvas_element, width, height) ->
         #Add to the offset
         @px_offset.x += delta_x
         @px_offset.y += delta_y
-        $("#debug_pane p span:eq(0)").text "X:#{@px_offset.x} Y:#{@px_offset.y}"
+        #$("#debug_pane p span:eq(0)").text "X:#{@px_offset.x} Y:#{@px_offset.y}"
 
         if Math.abs(@px_offset.x) >= node_size
             if @px_offset.x > 0 
@@ -149,7 +149,7 @@ GoL = (canvas_element, width, height) ->
                 @grid_offset.y += Math.ceil(@px_offset.y / node_size)
             @px_offset.y = @px_offset.y % node_size
 
-        $("#debug_pane p span:eq(1)").text "G_X:#{@grid_offset.x} G_Y:#{@grid_offset.y}"
+        #$("#debug_pane p span:eq(1)").text "G_X:#{@grid_offset.x} G_Y:#{@grid_offset.y}"
         _.defer => @drawGrid()
         undefined
         
@@ -198,46 +198,75 @@ GoL = (canvas_element, width, height) ->
     ret.view.pageToGrid = (page_x, page_y) ->
         x: Math.floor((page_x-@px_offset.x)/node_size),
         y: Math.floor((page_y-@px_offset.y)/node_size)
+    
+    ret.view.pageToAbs = (page_x, page_y) ->
+        x: Math.floor((page_x-@px_offset.x)/node_size) - ret.view.grid_offset.x,
+        y: Math.floor((page_y-@px_offset.y)/node_size) - ret.view.grid_offset.y
 
 
     #############################
     ## Controller               #
     #############################
     scroll_threshold = 15
+    #For JS events, 0 represents the right mouse button, 2 the left
+    [mouse_left, mouse_right] = [0, 2]
 
+    ret.ctrl.active = [false, false]
+    ret.ctrl.page_last = x: 0, y: 0
+    ret.ctrl.abs_last = x: 0, y: 0
     ret.ctrl.moved = false
-    ret.ctrl.lat = x: 0, y: 0
     ret.ctrl.hz = 8
     ret.ctrl.running = undefined
 
-    ret.ctrl.resolveMousedown = (page_x, page_y) ->
-        @last = x: page_x, y: page_y
-        @moved = false
+    ret.ctrl.resolveLeftMousedown = (page_x, page_y) ->
+        abs = ret.view.pageToAbs(page_x, page_y)
+        @page_last = x: page_x, y: page_y
+        @abs_last = x: abs.x, y: abs.y
+        if ret.model.isAliveAt abs.x, abs.y
+            ret.model.killCell abs.x, abs.y
+            @active[mouse_left] = "kill"
+        else
+            ret.model.raiseCell abs.x, abs.y
+            @active[mouse_left] = "raise"
+        undefined
+
+    ret.ctrl.resolveRightMousedown = (page_x, page_y) ->
+        @page_last = x: page_x, y: page_y
+        @active[mouse_right] = true
+        undefined
+
+    ret.ctrl.resolveMouseup = (button) ->
+        @active[button] = false
+        if not @active[mouse_left] and not @active[mouse_right]
+            @moved = false
+            _.defer => $("#draw_space").attr "oncontextmenu", " "
         undefined
     
     ret.ctrl.resolveMousemove = (page_x, page_y) ->
-        #If we've moved far enough, that needs to be related. And we
-        #won't bother checking if we have  started moving
-        @moved = true if not @moved and Math.abs((@last.x-page_x)) +
-                                        Math.abs((@last.y-page_y)) >
+        #If we've moved past the threshold, that needs to be known and
+        #acted upon.
+        if not @moved and Math.abs((@page_last.x-page_x)) +
+                                    Math.abs((@page_last.y-page_y)) >
                                         scroll_threshold
+            @moved = true
+            $("#draw_space").attr "oncontextmenu", "return false"
+
         if @moved
-            ret.view.moveOffset(page_x-@last.x, page_y-@last.y)
-            @last.x = page_x
-            @last.y = page_y
-        undefined
-    
-    ret.ctrl.resolveMouseup = (page_x, page_y) ->
-        if not @moved
-            grid = ret.view.pageToGrid(page_x, page_y)
-            x = grid.x - ret.view.grid_offset.x
-            y = grid.y - ret.view.grid_offset.y
-            if ret.model.isAliveAt x, y
-                ret.model.killCell x, y
-            else
-                ret.model.raiseCell x, y
-            $("#debug_pane p span:eq(2)").text "Click G X:#{grid.x} Y:#{grid.y}"
-            $("#debug_pane p span:eq(3)").text "::::::::::::: X:#{x} Y:#{y}"
+            if @active[mouse_left] and @active[mouse_right]
+                #We need to add zooming logic here
+                $("#debug_pane p span:eq(7)").text "ZOOOOOM!"
+            else if @active[mouse_right]
+                ret.view.moveOffset(page_x-@page_last.x, page_y-@page_last.y)
+                @page_last.x = page_x
+                @page_last.y = page_y
+            else #if @active[mouse_left]
+                abs = ret.view.pageToAbs(page_x, page_y)
+                if abs.x isnt @abs_last.x or abs.y isnt @abs_last.y
+                    @abs_last = x: abs.x, y: abs.y
+                    if @active[mouse_left] is "raise"
+                        ret.model.raiseCell abs.x, abs.y
+                    else if ret.model.isAliveAt abs.x, abs.y
+                        ret.model.killCell abs.x, abs.y
         undefined
 
     ret.ctrl.setHz = (hz) ->
@@ -262,26 +291,47 @@ GoL = (canvas_element, width, height) ->
     #############################
     ## HTML interactions. Final view calls. Return #
     #############################
-    #Setting callbacks
-    #Closing over this bit of setup to keep the namespace
-    #from getting poluted by cached init logic.
+    #Setting callbacks  
+    #Closing over this bit of setup to keep the namespace from getting
+    #poluted by cached init logic.
     ( ->
         $raphael = $(canvas_element)
+        watching_move = false
+        watchMouseMove = =>
+            if not watching_move
+                console.log "Watching moves"
+                watching_move = true
+                $raphael.on "mousemove", (event) =>
+                    $("#debug_pane p span:eq(1)").text "ret.ctrl.active[mouse_right] #{ret.ctrl.active[mouse_right]}"
+                    $("#debug_pane p span:eq(2)").text "ret.ctrl.active[mouse_left] #{ret.ctrl.active[mouse_left]}"
+                    ret.ctrl.resolveMousemove event.pageX, event.pageY
+                    false
+            undefined
+        unwatchMouseMove = =>
+            if watching_move
+                console.log "Unwatching moves"
+                watching_move = false
+                $raphael.off "mousemove"
+            undefined
+
         $raphael.on "mousedown", (event) =>
-            ret.ctrl.resolveMousedown event.pageX, event.pageY
-            $raphael.on "mousemove", (event) =>
-                ret.ctrl.resolveMousemove event.pageX, event.pageY
-                false
+            if event.button is mouse_left
+                ret.ctrl.resolveLeftMousedown event.pageX, event.pageY
+                watchMouseMove()
+            else if event.button is mouse_right
+                ret.ctrl.resolveRightMousedown event.pageX, event.pageY
+                watchMouseMove()
             false
         $(window).on "mouseup", (event) =>
-            $raphael.off "mousemove"
-            ret.ctrl.resolveMouseup event.pageX, event.pageY
-            undefined
+            ret.ctrl.resolveMouseup(event.button)
+            if not ret.ctrl.active[mouse_left] and not ret.ctrl.active[mouse_right]
+                unwatchMouseMove()
+            false
         $(window).on "resize", _.debounce (() =>
             ret.view.resizeGrid($(window).width(), $(window).height())
             undefined
             ), 90
-        undefined
+        true
     )()
 
     ret.step = () =>

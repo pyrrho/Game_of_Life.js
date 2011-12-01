@@ -5,18 +5,21 @@ $( ->
     ## UI Initialization and setup 
     $(".movable_pane").draggable()
     
+    # Button on click event setup
     $("#step").on "click", (event) ->
         game_of_life.step()
         undefined
-
     $("#start").on "click", (event) ->
         game_of_life.start()
         undefined
-
     $("#stop").on "click", (event) ->
         game_of_life.stop()
         undefined
-
+    $("#reset").on "click", (event) ->
+        game_of_life.reset()
+        undefined
+    
+    #Make me a slider!
     $("#hz_slide").slider(
         min: 4
         max: 50
@@ -31,10 +34,6 @@ $( ->
             game_of_life.setHz ui.value
             undefined
         )
-
-    $("#reset").on "click", (event) ->
-        game_of_life.reset()
-        undefined
 
     # Setting the first help_pane tab as open, and showing the related
     # content
