@@ -11,8 +11,6 @@ puts
 puts "Watching the following scss files:"
 puts "#{$sass_files}"
 puts
-puts "Watchr script is active. Code away."
-puts
 
 def brew(csf)
     puts "Detected change in #{csf} at #{Time.now}"
@@ -34,3 +32,6 @@ end
 
 watch(/src\/.*\.coffee/) { |md| brew md[0] }
 watch(/sass\/.*\.scss/) { |md| sass md[0] }
+
+puts "Watchr script is active. Code away."
+puts
