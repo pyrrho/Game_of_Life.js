@@ -4,8 +4,7 @@ GoL = (canvas_element, width, height) ->
     #############################
     state_set =
         empty:
-            "fill": "white"
-            "stroke-opacity": .2
+            "opacity": 0
         alive:
             "fill": "#1A301A"
             "stroke-opacity": .2
@@ -101,13 +100,14 @@ GoL = (canvas_element, width, height) ->
     #############################
     ## View                     #
     #############################
-    node_size = 15
-
     # We're assuming that `canvas_element` is going to be in the form
     # `"#html_id"`, and for some reason Raphael wants to look for it in
-    # the form `"html_id"`, so we're induldgin it.
+    # the form `"html_id"`, so we're indulging it.
     ret.view.paper = Raphael canvas_element.slice(1)
 
+    ret.view.node_size = 15
+    ret.view.min_node_size = 3
+    ret.view.max_node_size = 250
     ret.view.grid_offset = x: 0, y:0
     ret.view.px_offset = x:0, y:0
     ret.view.width = 0
@@ -116,11 +116,11 @@ GoL = (canvas_element, width, height) ->
     ret.view.node_rows = 0
 
     #Public Methods
-    ret.view.resizeGrid = (@width, @height) ->
+    ret.view.resizeGrid = (@width = @width, @height = @height) ->
         #Storing more variables for later use (width and height are
         #already stored).
-        @node_cols = 1 + Math.ceil @width / node_size
-        @node_rows = 1 + Math.ceil @height / node_size
+        @node_cols = 1 + Math.ceil @width / @node_size
+        @node_rows = 1 + Math.ceil @height / @node_size
 
         #(Re)Set the size of the Raphael Canvas
         @paper.setSize @width, @height
@@ -135,29 +135,29 @@ GoL = (canvas_element, width, height) ->
         @px_offset.y += delta_y
         #$("#debug_pane p span:eq(0)").text "X:#{@px_offset.x} Y:#{@px_offset.y}"
 
-        if Math.abs(@px_offset.x) >= node_size
+        if Math.abs(@px_offset.x) >= @node_size
             if @px_offset.x > 0 
-                @grid_offset.x += Math.floor(@px_offset.x / node_size)
+                @grid_offset.x += Math.floor(@px_offset.x / @node_size)
             else
-                @grid_offset.x += Math.ceil(@px_offset.x / node_size)
-            @px_offset.x = @px_offset.x % node_size
+                @grid_offset.x += Math.ceil(@px_offset.x / @node_size)
+            @px_offset.x = @px_offset.x % @node_size
         
-        if Math.abs(@px_offset.y) >= node_size
+        if Math.abs(@px_offset.y) >= @node_size
             if @px_offset.y > 0 
-                @grid_offset.y += Math.floor(@px_offset.y / node_size)
+                @grid_offset.y += Math.floor(@px_offset.y / @node_size)
             else
-                @grid_offset.y += Math.ceil(@px_offset.y / node_size)
-            @px_offset.y = @px_offset.y % node_size
+                @grid_offset.y += Math.ceil(@px_offset.y / @node_size)
+            @px_offset.y = @px_offset.y % @node_size
 
         #$("#debug_pane p span:eq(1)").text "G_X:#{@grid_offset.x} G_Y:#{@grid_offset.y}"
         _.defer => @drawGrid()
         undefined
         
     ret.view.drawGrid = _.throttle((() ->
-        #New plan. Instead of drawing every rectangle, I'm gonna just
-        #horizontal and vertical lines that run the entire width or
-        #length of the page, then go through the list of live cells
-        #to find out if one needs be rendered.
+        #Rather than drawing every rectangle, we simply draw
+        #horizontal and vertical lines that run the width or length of
+        #the page, then go through the list of live cells to find out
+        #if one needs be rendered.
         @paper.clear()
         @rects = []
 
@@ -165,20 +165,20 @@ GoL = (canvas_element, width, height) ->
             #Not a fan of this notation. 
             #M means `moveto`, L means `lineto`, and the lowercase
             #relative instructions don't seem to be working.
-            @paper.path("M#{i * node_size + @px_offset.x},0" +
-                       "L#{i * node_size + @px_offset.x},#{@height}")
+            @paper.path("M#{i * @node_size + @px_offset.x},0" +
+                       "L#{i * @node_size + @px_offset.x},#{@height}")
                         .attr "stroke-opacity": .2
         for j in [0..@node_rows]
-            @paper.path("M0,#{j * node_size + @px_offset.y}" +
-                        "L#{@width},#{j * node_size + @px_offset.y}")
+            @paper.path("M0,#{j * @node_size + @px_offset.y}" +
+                        "L#{@width},#{j * @node_size + @px_offset.y}")
                 .attr "stroke-opacity": .2
 
         for x in [-@grid_offset.x-1 ... @node_cols-@grid_offset.x]
             if ret.model.live_cells[x]?
             #An interesting heuristic. Do we iterate over all the live
             #cells in the model's column (an arbitrary number that
-            #will _probably_ stay small) or do we iterate over the
-            #number of rows being displayed?
+            #will _probably_ stay small), or do we iterate over the
+            #number of rows being displayed?  
             #I'm gonna go with the later, since I can cap its max
                 for y in [-@grid_offset.y-1 ... @node_rows-@grid_offset.y]
                     @colorRect x, y, state_set.alive if ret.model.live_cells[x][y]?
@@ -189,19 +189,19 @@ GoL = (canvas_element, width, height) ->
         grid_y = y + @grid_offset.y
 
         @rects[grid_x] ?= []
-        @rects[grid_x][grid_y] ?= @paper.rect(grid_x * node_size + @px_offset.x,
-                                              grid_y * node_size + @px_offset.y,
-                                              node_size, node_size)
+        @rects[grid_x][grid_y] ?= @paper.rect(grid_x * @node_size + @px_offset.x,
+                                              grid_y * @node_size + @px_offset.y,
+                                              @node_size, @node_size)
         @rects[grid_x][grid_y].attr state
         undefined
 
     ret.view.pageToGrid = (page_x, page_y) ->
-        x: Math.floor((page_x-@px_offset.x)/node_size),
-        y: Math.floor((page_y-@px_offset.y)/node_size)
+        x: Math.floor((page_x-@px_offset.x)/@node_size),
+        y: Math.floor((page_y-@px_offset.y)/@node_size)
     
     ret.view.pageToAbs = (page_x, page_y) ->
-        x: Math.floor((page_x-@px_offset.x)/node_size) - ret.view.grid_offset.x,
-        y: Math.floor((page_y-@px_offset.y)/node_size) - ret.view.grid_offset.y
+        x: Math.floor((page_x-@px_offset.x)/@node_size) - ret.view.grid_offset.x,
+        y: Math.floor((page_y-@px_offset.y)/@node_size) - ret.view.grid_offset.y
 
 
     #############################
@@ -253,12 +253,14 @@ GoL = (canvas_element, width, height) ->
 
         if @moved
             if @active[mouse_left] and @active[mouse_right]
-                #We need to add zooming logic here
-                $("#debug_pane p span:eq(7)").text "ZOOOOOM!"
+                ret.view.node_size += page_y-@page_last.y
+                if ret.view.node_size > ret.view.max_node_size
+                    ret.view.node_size = ret.view.max_node_size
+                else if ret.view.node_size < ret.view.min_node_size
+                    ret.view.node_size = ret.view.min_node_size
+                ret.view.resizeGrid()
             else if @active[mouse_right]
                 ret.view.moveOffset(page_x-@page_last.x, page_y-@page_last.y)
-                @page_last.x = page_x
-                @page_last.y = page_y
             else #if @active[mouse_left]
                 abs = ret.view.pageToAbs(page_x, page_y)
                 if abs.x isnt @abs_last.x or abs.y isnt @abs_last.y
@@ -267,6 +269,8 @@ GoL = (canvas_element, width, height) ->
                         ret.model.raiseCell abs.x, abs.y
                     else if ret.model.isAliveAt abs.x, abs.y
                         ret.model.killCell abs.x, abs.y
+            @page_last.x = page_x
+            @page_last.y = page_y
         undefined
 
     ret.ctrl.setHz = (hz) ->
