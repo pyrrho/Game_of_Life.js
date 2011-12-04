@@ -8,15 +8,16 @@ GoL = (canvas_element, width, height) ->
         alive:
             "fill": "#1A301A"
             "stroke-opacity": .2
+            "opactiy": 1
 
 
     #############################
     ## Object declarations      #
     #############################
-    ret = {}
-    ret.model = {}
-    ret.view = {}
-    ret.ctrl = {}
+    gol = {}
+    gol.model = {}
+    gol.view = {}
+    gol.ctrl = {}
 
 
     ##############################
@@ -27,31 +28,29 @@ GoL = (canvas_element, width, height) ->
                     [-1, 0], [-1, 1],
                     [ 0, 1], [ 1, 1]]
 
-    ret.model.current_step = 0
-    ret.model.cell_count = 0
-    ret.model.live_cells = {}
+    gol.model.current_step = 0
+    gol.model.cell_count = 0
+    gol.model.live_cells = {}
 
-    ret.model.raiseCell = (x, y) ->
+    gol.model.raiseCell = (x, y) ->
         @live_cells[x] ?= {}
         @live_cells[x][y] = 0
         @cell_count += 1
-        #$("#debug_pane p span:eq(6)").text @cell_count
-        ret.view.colorRect x, y, state_set.alive
+        gol.view.colorRect x, y, state_set.alive
         undefined
 
-    ret.model.killCell = (x, y) ->
+    gol.model.killCell = (x, y) ->
         delete @live_cells[x][y]
-        @cell_count -= 1
-        #$("#debug_pane p span:eq(6)").text @cell_count
         if $.isEmptyObject @live_cells[x]
             delete @live_cells[x]
-        ret.view.colorRect x, y, state_set.empty
+        @cell_count -= 1
+        gol.view.removeRect x, y
         undefined
     
-    ret.model.isAliveAt = (x, y) ->
+    gol.model.isAliveAt = (x, y) ->
         @live_cells[x]?[y]?
 
-    ret.model.step = () ->
+    gol.model.step = () ->
         #Wow... This is just.... Wow... So much kludge...
         @current_step += 1
         seeds = {}
@@ -91,205 +90,246 @@ GoL = (canvas_element, width, height) ->
                     @raiseCell(x, y)
         undefined
 
-    ret.model.reset = () ->
-        ret.model.current_step = 0
-        ret.model.cell_count = 0
-        ret.model.live_cells = {}
+    gol.model.reset = () ->
+        gol.model.current_step = 0
+        gol.model.cell_count = 0
+        gol.model.live_cells = {}
 
 
     #############################
     ## View                     #
     #############################
-    # We're assuming that `canvas_element` is going to be in the form
-    # `"#html_id"`, and for some reason Raphael wants to look for it in
-    # the form `"html_id"`, so we're indulging it.
-    ret.view.paper = Raphael canvas_element.slice(1)
+    node_size = 15
+    min_zoom = 0.2
+    max_zoom = 10
+    zoom_scalar = -> gol.view.current_zoom * 0.0025
 
-    ret.view.node_size = 15
-    ret.view.min_node_size = 3
-    ret.view.max_node_size = 250
-    ret.view.grid_offset = x: 0, y:0
-    ret.view.px_offset = x:0, y:0
-    ret.view.width = 0
-    ret.view.height = 0
-    ret.view.node_cols = 0
-    ret.view.node_rows = 0
+    #We're assuming that `canvas_element` is going to be in the form
+    #`"#html_id"`, and for some reason Raphael wants to look for it in
+    #the form `"html_id"`, so we're indulging it with the slice op.
+    gol.view.paper = Raphael canvas_element.slice(1)
+    
+    gol.view.width = 0
+    gol.view.height = 0
+    gol.view.current_zoom = 1
+    gol.view.scaled_node_size = node_size
+
+    gol.view.zoom_offset = x: 0.5, y: 0.5
+    gol.view.offset = x: 0, y: 0
+    gol.view.grid_offset = x: 0, y :0
+    gol.view.px_offset = x: 0, y: 0
 
     #Public Methods
-    ret.view.resizeGrid = (@width = @width, @height = @height) ->
-        #Storing more variables for later use (width and height are
-        #already stored).
-        @node_cols = 1 + Math.ceil @width / @node_size
-        @node_rows = 1 + Math.ceil @height / @node_size
-
-        #(Re)Set the size of the Raphael Canvas
+    gol.view.resizeCanvas = (@width, @height) ->
         @paper.setSize @width, @height
-
-        #Draw that grid
         @drawGrid()
         undefined
     
-    ret.view.moveOffset = (delta_x, delta_y) ->
+    gol.view.set_zoom_offset = (page_x, page_y) ->
+        @zoom_offset = x: page_x / @width, y: page_y / @height
+        #console.log "pagex:#{page_x}, pagey:#{page_y}"
+        #console.log "offsx:#{@zoom_offset.x}, offsy:#{@zoom_offset.y}"
+        undefined
+
+    gol.view.zoom = (delta) ->
+        old_zoom = @current_zoom
+        @current_zoom += zoom_scalar()*delta
+        if @current_zoom > max_zoom then @current_zoom = max_zoom
+        else if @current_zoom < min_zoom then @current_zoom = min_zoom
+
+        if old_zoom != @current_zoom
+            @scaled_node_size = node_size*@current_zoom
+            #console.log "Old zoom: #{old_zoom}"
+            #console.log "Current Zoom: #{@current_zoom}"
+            #console.log "Old Width: #{@width / old_zoom}"
+            #console.log "Old Height: #{@height / old_zoom}" 
+            #console.log "New Width: #{@width / @current_zoom}"
+            #console.log "New Height: #{@height / @current_zoom}"
+
+            #current_zoom = @current_zoom
+            #@moveOffset(@width/current_zoom - @width/old_zoom,
+            #            @height/current_zoom - @height/old_zoom)
+            #@moveOffset(@width/old_zoom - @width/current_zoom,
+            #            @height/old_zoom - @height/current_zoom)
+            #console.log "Dx: #{(@width / old_zoom - @width / @current_zoom)*@zoom_offset.x}"
+            #console.log "Dy: #{(@height / old_zoom - @height / @current_zoom)*@zoom_offset.y}"
+            console.log "  x grid:#{@grid_offset.x} px:#{@px_offset.x}"
+            console.log "  y grid:#{@grid_offset.y} px:#{@px_offset.y}"
+            _.defer => @drawGrid()
+        undefined
+    
+    gol.view.moveOffset = (delta_x, delta_y) ->
+        console.log "delta_x: #{delta_x}"
+        console.log "delta_y: #{delta_y}"
+        console.log "x grid:#{@grid_offset.x} px:#{@px_offset.x}"
+        console.log "y grid:#{@grid_offset.y} px:#{@px_offset.y}"
         #Add to the offset
-        @px_offset.x += delta_x
-        @px_offset.y += delta_y
-        #$("#debug_pane p span:eq(0)").text "X:#{@px_offset.x} Y:#{@px_offset.y}"
-
-        if Math.abs(@px_offset.x) >= @node_size
-            if @px_offset.x > 0 
-                @grid_offset.x += Math.floor(@px_offset.x / @node_size)
-            else
-                @grid_offset.x += Math.ceil(@px_offset.x / @node_size)
-            @px_offset.x = @px_offset.x % @node_size
-        
-        if Math.abs(@px_offset.y) >= @node_size
-            if @px_offset.y > 0 
-                @grid_offset.y += Math.floor(@px_offset.y / @node_size)
-            else
-                @grid_offset.y += Math.ceil(@px_offset.y / @node_size)
-            @px_offset.y = @px_offset.y % @node_size
-
-        #$("#debug_pane p span:eq(1)").text "G_X:#{@grid_offset.x} G_Y:#{@grid_offset.y}"
+        @offset.x += delta_x
+        @offset.y += delta_y
+        @grid_offset = x: Math.floor(@offset.x / @scaled_node_size),\
+                       y: Math.floor(@offset.y / @scaled_node_size)
+        #There has to be a better way of doing this part....
+        @px_offset = x: @offset.x % @scaled_node_size,\
+                     y: @offset.y % @scaled_node_size
+        @px_offset.x += @scaled_node_size if @px_offset.x < 0
+        @px_offset.y += @scaled_node_size if @px_offset.y < 0
         _.defer => @drawGrid()
         undefined
         
-    ret.view.drawGrid = _.throttle((() ->
-        #Rather than drawing every rectangle, we simply draw
-        #horizontal and vertical lines that run the width or length of
-        #the page, then go through the list of live cells to find out
-        #if one needs be rendered.
+    #Rather than drawing every rectangle, we simply draw horizontal
+    #and vertical lines that run the width or length of the page, then
+    #go through the list of live cells to find out if one needs be
+    #rendered.
+    gol.view.drawGrid = _.throttle((() ->
         @paper.clear()
+        #`@rects` gets repopulated in `@colorRect(. . .)`
         @rects = []
 
-        for i in [0..@node_cols]
-            #Not a fan of this notation. 
-            #M means `moveto`, L means `lineto`, and the lowercase
-            #relative instructions don't seem to be working.
-            @paper.path("M#{i * @node_size + @px_offset.x},0" +
-                       "L#{i * @node_size + @px_offset.x},#{@height}")
-                        .attr "stroke-opacity": .2
-        for j in [0..@node_rows]
-            @paper.path("M0,#{j * @node_size + @px_offset.y}" +
-                        "L#{@width},#{j * @node_size + @px_offset.y}")
-                .attr "stroke-opacity": .2
+        node_cols = 1 + Math.ceil @width / @scaled_node_size
+        node_rows = 1 + Math.ceil @height / @scaled_node_size
 
-        for x in [-@grid_offset.x-1 ... @node_cols-@grid_offset.x]
-            if ret.model.live_cells[x]?
-            #An interesting heuristic. Do we iterate over all the live
-            #cells in the model's column (an arbitrary number that
-            #will _probably_ stay small), or do we iterate over the
-            #number of rows being displayed?  
-            #I'm gonna go with the later, since I can cap its max
-                for y in [-@grid_offset.y-1 ... @node_rows-@grid_offset.y]
-                    @colorRect x, y, state_set.alive if ret.model.live_cells[x][y]?
+        for i in [0..node_cols]
+            #Not a fan of this notation. 
+            #M means `moveto`, L means `lineto`.
+            @paper.path("M#{i * @scaled_node_size + @px_offset.x},0" +
+                        "L#{i * @scaled_node_size + @px_offset.x},#{@height}")
+                        .attr "stroke-opacity": .2
+        for j in [0..node_rows]
+            @paper.path("M0,#{j * @scaled_node_size + @px_offset.y}" +
+                        "L#{@width},#{j * @scaled_node_size + @px_offset.y}")
+                        .attr "stroke-opacity": .2
+
+        #An interesting heuristic. Do we iterate over all the live
+        #cells in the model's column (an arbitrary number that will
+        #_probably_ stay small), or do we iterate over the number of
+        #rows being displayed?  
+        #I'm gonna go with the later, since I can cap its max
+        for x in [-@grid_offset.x-1 ... node_cols-@grid_offset.x]
+            if gol.model.live_cells[x]?
+                for y in [-@grid_offset.y-1 ... node_rows-@grid_offset.y]
+                    @colorRect x, y, state_set.alive if gol.model.live_cells[x][y]?
+
+        @paper.circle(@grid_offset.x*@scaled_node_size + @px_offset.x,
+                      @grid_offset.y*@scaled_node_size + @px_offset.y,
+                      20*@current_zoom).attr "fill": "red"
         undefined), 3)
 
-    ret.view.colorRect = (x, y, state) ->
+    gol.view.colorRect = (x, y, state) ->
         grid_x = x + @grid_offset.x
         grid_y = y + @grid_offset.y
 
         @rects[grid_x] ?= []
-        @rects[grid_x][grid_y] ?= @paper.rect(grid_x * @node_size + @px_offset.x,
-                                              grid_y * @node_size + @px_offset.y,
-                                              @node_size, @node_size)
+        @rects[grid_x][grid_y] ?= @paper.rect(grid_x * @scaled_node_size + @px_offset.x,
+                                              grid_y * @scaled_node_size + @px_offset.y,
+                                              @scaled_node_size, @scaled_node_size)
         @rects[grid_x][grid_y].attr state
         undefined
 
-    ret.view.pageToGrid = (page_x, page_y) ->
-        x: Math.floor((page_x-@px_offset.x)/@node_size),
-        y: Math.floor((page_y-@px_offset.y)/@node_size)
+    gol.view.removeRect = (x, y) ->
+        grid_x = x + @grid_offset.x
+        grid_y = y + @grid_offset.y
+
+        if @rects[grid_x]?[grid_y]?
+            @rects[grid_x][grid_y].remove() 
+            delete @rects[grid_x][grid_y]
+        undefined
+
+    gol.view.pageToGrid = (page_x, page_y) ->
+        x: Math.floor((page_x-@px_offset.x)/@scaled_node_size),
+        y: Math.floor((page_y-@px_offset.y)/@scaled_node_size)
     
-    ret.view.pageToAbs = (page_x, page_y) ->
-        x: Math.floor((page_x-@px_offset.x)/@node_size) - ret.view.grid_offset.x,
-        y: Math.floor((page_y-@px_offset.y)/@node_size) - ret.view.grid_offset.y
+    gol.view.pageToAbs = (page_x, page_y) ->
+        x: Math.floor((page_x-@px_offset.x)/@scaled_node_size) - gol.view.grid_offset.x,
+        y: Math.floor((page_y-@px_offset.y)/@scaled_node_size) - gol.view.grid_offset.y
 
 
     #############################
     ## Controller               #
     #############################
-    scroll_threshold = 15
+    scroll_threshold = 5
     #For JS events, 0 represents the right mouse button, 2 the left
     [mouse_left, mouse_right] = [0, 2]
 
-    ret.ctrl.active = [false, false]
-    ret.ctrl.page_last = x: 0, y: 0
-    ret.ctrl.abs_last = x: 0, y: 0
-    ret.ctrl.moved = false
-    ret.ctrl.hz = 8
-    ret.ctrl.running = undefined
+    gol.ctrl.active = [false, false]
+    gol.ctrl.drag_start = x: 0, y: 0
+    gol.ctrl.page_last = x: 0, y: 0
+    gol.ctrl.abs_last = x: 0, y: 0
+    gol.ctrl.moving = false
+    gol.ctrl.hz = 8
+    gol.ctrl.running = undefined
 
-    ret.ctrl.resolveLeftMousedown = (page_x, page_y) ->
-        abs = ret.view.pageToAbs(page_x, page_y)
+    gol.ctrl.resolveMousedown = (page_x, page_y, button) ->
+        @active[button] = true
         @page_last = x: page_x, y: page_y
-        @abs_last = x: abs.x, y: abs.y
-        if ret.model.isAliveAt abs.x, abs.y
-            ret.model.killCell abs.x, abs.y
-            @active[mouse_left] = "kill"
-        else
-            ret.model.raiseCell abs.x, abs.y
-            @active[mouse_left] = "raise"
+        abs = gol.view.pageToAbs(page_x, page_y)
+        #Starting a zoom?
+        if @active[mouse_left] and @active[mouse_right]
+            #gol.view.set_zoom_offset(page_x, page_y)
+        #Or messing with cells?
+        else if @active[mouse_left]
+            if gol.model.isAliveAt abs.x, abs.y
+                gol.model.killCell abs.x, abs.y
+                @active[mouse_left] = "kill"
+            else
+                gol.model.raiseCell abs.x, abs.y
+                @active[mouse_left] = "raise"
+            @abs_last = x: abs.x, y: abs.y
+        #Dragging the canvas around?
+        #else #if @active[mouse_right]
         undefined
 
-    ret.ctrl.resolveRightMousedown = (page_x, page_y) ->
-        @page_last = x: page_x, y: page_y
-        @active[mouse_right] = true
-        undefined
-
-    ret.ctrl.resolveMouseup = (button) ->
+    gol.ctrl.resolveMouseup = (button) ->
         @active[button] = false
         if not @active[mouse_left] and not @active[mouse_right]
-            @moved = false
+            @moving = false
             _.defer => $("#draw_space").attr "oncontextmenu", " "
         undefined
     
-    ret.ctrl.resolveMousemove = (page_x, page_y) ->
+    gol.ctrl.resolveMousemove = (page_x, page_y) ->
         #If we've moved past the threshold, that needs to be known and
         #acted upon.
-        if not @moved and Math.abs((@page_last.x-page_x)) +
-                                    Math.abs((@page_last.y-page_y)) >
-                                        scroll_threshold
-            @moved = true
+        delta_x = @page_last.x-page_x
+        delta_y = @page_last.y-page_y
+        if not @moving and Math.abs(delta_x) +
+                           Math.abs(delta_y) > scroll_threshold
+            @moving = true
             $("#draw_space").attr "oncontextmenu", "return false"
+            @drag_start = x: @page_last.x, y: @page_last.y
 
-        if @moved
+        if @moving
             if @active[mouse_left] and @active[mouse_right]
-                ret.view.node_size += page_y-@page_last.y
-                if ret.view.node_size > ret.view.max_node_size
-                    ret.view.node_size = ret.view.max_node_size
-                else if ret.view.node_size < ret.view.min_node_size
-                    ret.view.node_size = ret.view.min_node_size
-                ret.view.resizeGrid()
+                gol.view.zoom(delta_y)
             else if @active[mouse_right]
-                ret.view.moveOffset(page_x-@page_last.x, page_y-@page_last.y)
-            else #if @active[mouse_left]
-                abs = ret.view.pageToAbs(page_x, page_y)
+                gol.view.moveOffset(-delta_x, -delta_y)
+            else#if @active[mouse_left]
+                abs = gol.view.pageToAbs(page_x, page_y)
                 if abs.x isnt @abs_last.x or abs.y isnt @abs_last.y
                     @abs_last = x: abs.x, y: abs.y
                     if @active[mouse_left] is "raise"
-                        ret.model.raiseCell abs.x, abs.y
-                    else if ret.model.isAliveAt abs.x, abs.y
-                        ret.model.killCell abs.x, abs.y
+                        gol.model.raiseCell abs.x, abs.y
+                    else if gol.model.isAliveAt abs.x, abs.y
+                        gol.model.killCell abs.x, abs.y
             @page_last.x = page_x
             @page_last.y = page_y
         undefined
 
-    ret.ctrl.setHz = (hz) ->
+    gol.ctrl.setHz = (hz) ->
         @hz = hz
         if @running?
             clearTimeout(@running)
-            @running = setInterval (=> ret.model.step()), 1000/@hz
+            @running = setInterval (=> gol.model.step()), 1000/@hz
         undefined
 
-    ret.ctrl.start = () ->
-        @running ?= setInterval (=> ret.model.step()), 1000/@hz
+    gol.ctrl.start = () ->
+        @running ?= setInterval (=> gol.model.step()), 1000/@hz
         undefined
 
-    ret.ctrl.stop = () ->
+    gol.ctrl.stop = () ->
         clearTimeout(@running)
         delete(@running)
         undefined
 
-    ret.ctrl.reset = () ->
+    gol.ctrl.reset = () ->
         @.stop()
 
     #############################
@@ -300,62 +340,44 @@ GoL = (canvas_element, width, height) ->
     #poluted by cached init logic.
     ( ->
         $raphael = $(canvas_element)
-        watching_move = false
-        watchMouseMove = =>
-            if not watching_move
-                console.log "Watching moves"
-                watching_move = true
-                $raphael.on "mousemove", (event) =>
-                    $("#debug_pane p span:eq(1)").text "ret.ctrl.active[mouse_right] #{ret.ctrl.active[mouse_right]}"
-                    $("#debug_pane p span:eq(2)").text "ret.ctrl.active[mouse_left] #{ret.ctrl.active[mouse_left]}"
-                    ret.ctrl.resolveMousemove event.pageX, event.pageY
-                    false
-            undefined
-        unwatchMouseMove = =>
-            if watching_move
-                console.log "Unwatching moves"
-                watching_move = false
-                $raphael.off "mousemove"
-            undefined
 
         $raphael.on "mousedown", (event) =>
-            if event.button is mouse_left
-                ret.ctrl.resolveLeftMousedown event.pageX, event.pageY
-                watchMouseMove()
-            else if event.button is mouse_right
-                ret.ctrl.resolveRightMousedown event.pageX, event.pageY
-                watchMouseMove()
+            gol.ctrl.resolveMousedown event.pageX, event.pageY, event.button
+            $raphael.on "mousemove", (event) =>
+                gol.ctrl.resolveMousemove event.pageX, event.pageY
+                false
             false
         $(window).on "mouseup", (event) =>
-            ret.ctrl.resolveMouseup(event.button)
-            if not ret.ctrl.active[mouse_left] and not ret.ctrl.active[mouse_right]
-                unwatchMouseMove()
+            gol.ctrl.resolveMouseup(event.button)
+            if not gol.ctrl.active[mouse_left] and not gol.ctrl.active[mouse_right]
+                $raphael.off "mousemove"
             false
         $(window).on "resize", _.debounce (() =>
-            ret.view.resizeGrid($(window).width(), $(window).height())
+            gol.view.resizeCanvas($(window).width(), $(window).height())
             undefined
             ), 90
         true
     )()
 
-    ret.step = () =>
-        ret.model.step()
+    gol.step = () =>
+        gol.model.step()
         undefined
 
-    ret.start = () =>
-        ret.ctrl.start()
+    gol.start = () =>
+        gol.ctrl.start()
 
-    ret.stop = () =>
-        ret.ctrl.stop()
+    gol.stop = () =>
+        gol.ctrl.stop()
     
-    ret.setHz = (hz) =>
-        ret.ctrl.setHz(hz)
+    gol.setHz = (hz) =>
+        gol.ctrl.setHz(hz)
 
-    ret.reset = () =>
-        ret.ctrl.reset()
-        ret.model.reset()
-        ret.view.drawGrid()
+    gol.reset = () =>
+        gol.ctrl.reset()
+        gol.model.reset()
+        gol.view.drawGrid()
+        undefined
 
-    ret.view.resizeGrid(width, height)
+    gol.view.resizeCanvas(width, height)
 
-    return ret
+    return gol
