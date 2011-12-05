@@ -139,6 +139,7 @@ GoL = (canvas_element, width, height) ->
 
         if old_zoom != @current_zoom
             @scaled_node_size = node_size*@current_zoom
+
             #console.log "Old zoom: #{old_zoom}"
             #console.log "Current Zoom: #{@current_zoom}"
             #console.log "Old Width: #{@width / old_zoom}"
@@ -153,16 +154,17 @@ GoL = (canvas_element, width, height) ->
             #            @height/old_zoom - @height/current_zoom)
             #console.log "Dx: #{(@width / old_zoom - @width / @current_zoom)*@zoom_offset.x}"
             #console.log "Dy: #{(@height / old_zoom - @height / @current_zoom)*@zoom_offset.y}"
-            console.log "  x grid:#{@grid_offset.x} px:#{@px_offset.x}"
-            console.log "  y grid:#{@grid_offset.y} px:#{@px_offset.y}"
-            _.defer => @drawGrid()
+
+            @moveOffset(0,0)
+            #_.defer => @drawGrid()
         undefined
     
     gol.view.moveOffset = (delta_x, delta_y) ->
-        console.log "delta_x: #{delta_x}"
-        console.log "delta_y: #{delta_y}"
-        console.log "x grid:#{@grid_offset.x} px:#{@px_offset.x}"
-        console.log "y grid:#{@grid_offset.y} px:#{@px_offset.y}"
+
+        #console.log "delta_x: #{delta_x}, delta_y: #{delta_y}"
+        #console.log "x grid:#{@grid_offset.x} px:#{@px_offset.x}" +
+        #            "y grid:#{@grid_offset.y} px:#{@px_offset.y}"
+
         #Add to the offset
         @offset.x += delta_x
         @offset.y += delta_y
@@ -200,18 +202,17 @@ GoL = (canvas_element, width, height) ->
                         .attr "stroke-opacity": .2
 
         #An interesting heuristic. Do we iterate over all the live
-        #cells in the model's column (an arbitrary number that will
-        #_probably_ stay small), or do we iterate over the number of
-        #rows being displayed?  
-        #I'm gonna go with the later, since I can cap its max
-        for x in [-@grid_offset.x-1 ... node_cols-@grid_offset.x]
+        #cells in the model (an arbitrary number that will _probably_
+        #stay small), or do we iterate over cells being displayed?
+        #I'm going to go with the later, since I can cap its max
+        for x in [0-@grid_offset.x ... node_cols-@grid_offset.x]
             if gol.model.live_cells[x]?
-                for y in [-@grid_offset.y-1 ... node_rows-@grid_offset.y]
+                for y in [0-@grid_offset.y ... node_rows-@grid_offset.y]
                     @colorRect x, y, state_set.alive if gol.model.live_cells[x][y]?
 
         @paper.circle(@grid_offset.x*@scaled_node_size + @px_offset.x,
                       @grid_offset.y*@scaled_node_size + @px_offset.y,
-                      20*@current_zoom).attr "fill": "red"
+                      10*@current_zoom).attr "fill": "red"
         undefined), 3)
 
     gol.view.colorRect = (x, y, state) ->
