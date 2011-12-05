@@ -127,8 +127,6 @@ GoL = (canvas_element, width, height) ->
     
     gol.view.set_zoom_offset = (page_x, page_y) ->
         @zoom_offset = x: page_x / @width, y: page_y / @height
-        #console.log "pagex:#{page_x}, pagey:#{page_y}"
-        #console.log "offsx:#{@zoom_offset.x}, offsy:#{@zoom_offset.y}"
         undefined
 
     gol.view.zoom = (delta) ->
@@ -139,40 +137,24 @@ GoL = (canvas_element, width, height) ->
 
         if old_zoom != @current_zoom
             @scaled_node_size = node_size*@current_zoom
-
-            #console.log "Old zoom: #{old_zoom}"
-            #console.log "Current Zoom: #{@current_zoom}"
-            #console.log "Old Width: #{@width / old_zoom}"
-            #console.log "Old Height: #{@height / old_zoom}" 
-            #console.log "New Width: #{@width / @current_zoom}"
-            #console.log "New Height: #{@height / @current_zoom}"
-
-            #current_zoom = @current_zoom
-            #@moveOffset(@width/current_zoom - @width/old_zoom,
-            #            @height/current_zoom - @height/old_zoom)
-            #@moveOffset(@width/old_zoom - @width/current_zoom,
-            #            @height/old_zoom - @height/current_zoom)
-            #console.log "Dx: #{(@width / old_zoom - @width / @current_zoom)*@zoom_offset.x}"
-            #console.log "Dy: #{(@height / old_zoom - @height / @current_zoom)*@zoom_offset.y}"
-
-            @moveOffset(0,0)
-            #_.defer => @drawGrid()
+            current_zoom = @current_zoom
+            @moveOffset(-(@width/old_zoom - @width/current_zoom) * @zoom_offset.x,
+                        -(@height/old_zoom - @height/current_zoom) * @zoom_offset.y,
+                        false)
         undefined
     
-    gol.view.moveOffset = (delta_x, delta_y) ->
-
-        #console.log "delta_x: #{delta_x}, delta_y: #{delta_y}"
-        #console.log "x grid:#{@grid_offset.x} px:#{@px_offset.x}" +
-        #            "y grid:#{@grid_offset.y} px:#{@px_offset.y}"
-
-        #Add to the offset
-        @offset.x += delta_x
-        @offset.y += delta_y
-        @grid_offset = x: Math.floor(@offset.x / @scaled_node_size),\
-                       y: Math.floor(@offset.y / @scaled_node_size)
+    gol.view.moveOffset = (delta_x, delta_y, scale=true) ->
+        if scale #Do we want to scale the delta by the current zoom?
+            @offset.x += delta_x * (1/@current_zoom)
+            @offset.y += delta_y * (1/@current_zoom)
+        else #We're not scaling
+            @offset.x += delta_x
+            @offset.y += delta_y
+        @grid_offset = x: Math.floor((@offset.x * @current_zoom) / @scaled_node_size),\
+                       y: Math.floor((@offset.y * @current_zoom) / @scaled_node_size)
         #There has to be a better way of doing this part....
-        @px_offset = x: @offset.x % @scaled_node_size,\
-                     y: @offset.y % @scaled_node_size
+        @px_offset = x: (@offset.x * @current_zoom) % @scaled_node_size,\
+                     y: (@offset.y * @current_zoom) % @scaled_node_size
         @px_offset.x += @scaled_node_size if @px_offset.x < 0
         @px_offset.y += @scaled_node_size if @px_offset.y < 0
         _.defer => @drawGrid()
@@ -191,8 +173,8 @@ GoL = (canvas_element, width, height) ->
         node_rows = 1 + Math.ceil @height / @scaled_node_size
 
         for i in [0..node_cols]
-            #Not a fan of this notation. 
-            #M means `moveto`, L means `lineto`.
+            #Not a fan of this notation. #M means `moveto`, L means 
+            #`lineto`.
             @paper.path("M#{i * @scaled_node_size + @px_offset.x},0" +
                         "L#{i * @scaled_node_size + @px_offset.x},#{@height}")
                         .attr "stroke-opacity": .2
@@ -209,10 +191,6 @@ GoL = (canvas_element, width, height) ->
             if gol.model.live_cells[x]?
                 for y in [0-@grid_offset.y ... node_rows-@grid_offset.y]
                     @colorRect x, y, state_set.alive if gol.model.live_cells[x][y]?
-
-        @paper.circle(@grid_offset.x*@scaled_node_size + @px_offset.x,
-                      @grid_offset.y*@scaled_node_size + @px_offset.y,
-                      10*@current_zoom).attr "fill": "red"
         undefined), 3)
 
     gol.view.colorRect = (x, y, state) ->
@@ -265,7 +243,7 @@ GoL = (canvas_element, width, height) ->
         abs = gol.view.pageToAbs(page_x, page_y)
         #Starting a zoom?
         if @active[mouse_left] and @active[mouse_right]
-            #gol.view.set_zoom_offset(page_x, page_y)
+            gol.view.set_zoom_offset(page_x, page_y)
         #Or messing with cells?
         else if @active[mouse_left]
             if gol.model.isAliveAt abs.x, abs.y
