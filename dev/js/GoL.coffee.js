@@ -471,7 +471,6 @@
       $("#hz_slider").slider("value", val);
       return;
     });
-    $("ul.tab_menu li:first").addClass("open");
     $("div.tab_content:first").show();
     $("ul.tab_menu li").on("click", function(event) {
       var activeTab;

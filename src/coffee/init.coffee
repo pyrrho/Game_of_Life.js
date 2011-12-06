@@ -62,7 +62,6 @@ $( ->
 
     # Setting the first help_pane tab as open, and showing the related
     # content
-    $("ul.tab_menu li:first").addClass("open")
     $("div.tab_content:first").show()
 
     # Setting the callback for clicking on any element of the tab menu
