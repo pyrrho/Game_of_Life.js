@@ -60,15 +60,16 @@
 
   <!--The Control Pane. It's where all the cool buttons and sliders are. -->
   <div id="control_pane" class="movable_pane content_pane">
-    <p><div class="button_set">
-      <a id="step" class="button">Step</a>
-      <a id="start" class="button">Start</a>
-      <a id="stop" class="button">Stop</a>
-    </div></p>
-    <!-- <p><input type="range" id="hz_slide" min="4" max="50" value="8" /> -->
-    <p><div id="hz_slide"></div>
-         <span id="hz_value">8</span> hz</p>
-    <p><div class="button_set"><a id="reset" class="button">Reset</a></div></p>
+    <p>Controls</p>
+    <input type="checkbox" id="play" /><label for="play" id="play_label" class="jq_button">Play</label>
+    <label for="hz"><strong>Hz</strong></label><input type="text" id="hz" maxlength="2" size="1" value="8" />
+    <br />
+    <span id="hz_slider"></span>
+    <br />
+    <span id="step_reset_set">
+      <input type="button" id="step" value="Step" class="jq_button"/>
+      <input type="button" id="reset" /value="Reset" class="jq_button"/>
+    </span>
   </div>
 
   <!--TEMPORARY DEBUG PANE

@@ -409,39 +409,67 @@
   };
 
   $(function() {
+    var max_hz, min_hz, play;
     window.game_of_life = GoL("#draw_space", $(window).width(), $(window).height());
     $(".movable_pane").draggable();
+    $("#step_reset_set").buttonset();
+    play = false;
+    $("#play").button();
+    $("#play").on("click", function(event) {
+      if (!play) {
+        play = true;
+        game_of_life.start();
+      } else {
+        play = false;
+        game_of_life.stop();
+      }
+      return;
+    });
+    $("#step").button();
     $("#step").on("click", function(event) {
       game_of_life.step();
       return;
     });
-    $("#start").on("click", function(event) {
-      game_of_life.start();
-      return;
-    });
-    $("#stop").on("click", function(event) {
-      game_of_life.stop();
-      return;
-    });
+    $("#reset").button();
     $("#reset").on("click", function(event) {
       game_of_life.reset();
+      if (play) $("#play").click();
       return;
     });
-    $("#hz_slide").slider({
-      min: 4,
-      max: 50,
+    min_hz = 0;
+    max_hz = 50;
+    $("#hz_slider").slider({
+      min: min_hz,
+      max: max_hz,
       value: 8,
       step: 1,
       slide: function(event, ui) {
-        $("#hz_value").text(ui.value);
+        $("#hz").val(ui.value);
         game_of_life.setHz(ui.value);
         return;
       },
       change: function(event, ui) {
-        $("#hz_value").text(ui.value);
+        $("#hz").val(ui.value);
         game_of_life.setHz(ui.value);
         return;
       }
+    });
+    $("#hz").on("change", function(event) {
+      var val;
+      val = $("#hz").val();
+      if (isNaN(val)) {
+        ui.val("NaN");
+        return;
+      }
+      val = parseInt(val);
+      if (val > max_hz) {
+        val = max_hz;
+      } else if (val < min_hz) {
+        val = min_hz;
+      }
+      $("#hz").val(val);
+      $("#hz_slider").slider("value", val);
+      return;
     });
     $("ul.tab_menu li:first").addClass("open");
     $("div.tab_content:first").show();

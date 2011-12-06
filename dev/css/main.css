@@ -9,7 +9,7 @@ sub {
   font-style: italic;
   vertical-align: -15%; }
 
-/*MOVABLE PANES
+/*CONTENT PANES
 -----*/
 div.content_pane {
   border-radius: 12px;
@@ -35,29 +35,13 @@ div.content_pane {
   width: 200px;
   top: 40px;
   right: 40px; }
+  #control_pane .jq_button {
+    font-size: .7em; }
 
-#hz_slide {
+#hz_slider {
   display: inline-block;
-  width: 70%;
-  margin-right: .4em; }
-
-div.button_set {
-  display: inline-block;
-  height: 1.2em; }
-  div.button_set a {
-    padding: .4em;
-    border-radius: .2em;
-    background: #c0d0f0;
-    font-weight: bold;
-    color: #333;
-    border: solid 1px #7088bb; }
-  div.button_set a:hover {
-    color: #111111;
-    background: #a0b0f0;
-    border: solid 1px #666666; }
-  div.button_set a:active {
-    background: #808BC2;
-    border: solid 1px #4050A0; }
+  width: 100%;
+  font-size: .5em; }
 
 /*HELP PANE
 -----*/

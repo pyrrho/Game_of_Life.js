@@ -2,38 +2,63 @@
 $( ->
     window.game_of_life = GoL("#draw_space", $(window).width(), $(window).height())
 
-    ## UI Initialization and setup 
+    ## UI Setup
     $(".movable_pane").draggable()
-    
+
     # Button on click event setup
+    $("#step_reset_set").buttonset()
+
+    play = false
+    $("#play").button()
+    $("#play").on "click", (event) ->
+        if not play
+            play = true
+            game_of_life.start()
+        else
+            play = false
+            game_of_life.stop()
+        undefined
+
+    $("#step").button()
     $("#step").on "click", (event) ->
         game_of_life.step()
         undefined
-    $("#start").on "click", (event) ->
-        game_of_life.start()
-        undefined
-    $("#stop").on "click", (event) ->
-        game_of_life.stop()
-        undefined
+
+    $("#reset").button()
     $("#reset").on "click", (event) ->
         game_of_life.reset()
+        if play
+            $("#play").click()
         undefined
     
-    #Make me a slider!
-    $("#hz_slide").slider(
-        min: 4
-        max: 50
+    #That slider.
+    min_hz = 0
+    max_hz = 50
+    $("#hz_slider").slider(
+        min: min_hz
+        max: max_hz
         value: 8
         step: 1
         slide: (event, ui) ->
-            $("#hz_value").text ui.value
+            $("#hz").val ui.value
             game_of_life.setHz ui.value
             undefined
         change: (event, ui) ->
-            $("#hz_value").text ui.value
+            $("#hz").val ui.value
             game_of_life.setHz ui.value
             undefined
         )
+    $("#hz").on "change", (event) ->
+        val = $("#hz").val()
+        if isNaN(val)
+            ui.val "NaN"
+            return undefined
+        val = parseInt(val)
+        if val > max_hz then val = max_hz
+        else if val < min_hz then val = min_hz
+        $("#hz").val val
+        $("#hz_slider").slider "value", val
+        undefined
 
     # Setting the first help_pane tab as open, and showing the related
     # content

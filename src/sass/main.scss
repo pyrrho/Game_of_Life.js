@@ -11,7 +11,7 @@ sub {
     vertical-align: -15%;
 }
 
-/*MOVABLE PANES
+/*CONTENT PANES
 -----*/
 $content_bg_color: rgba(68,79,87,.8);
 $text_color: rgb(0,0,0);
@@ -52,36 +52,39 @@ div.content_pane {
     position: absolute;
     width: 200px;
     top: 40px; right: 40px;
+
+    .jq_button {
+        font-size: .7em;
+    }
 }
-//This damn slider...
-#hz_slide {
+#hz_slider {
     display: inline-block;
-    width: 70%;
-    margin-right: .4em;
+    width: 100%;
+    font-size: .5em;
 }
 
-div.button_set { //Pure CSS buttons.
-    display: inline-block;
-    height: 1.2em;
+// div.button_set { //Pure CSS buttons.
+//     display: inline-block;
+//     height: 1.2em;
 
-    a {
-        padding: .4em;
-        border-radius: .2em;
-        background: #c0d0f0;
-        font-weight: bold;
-        color: #333;
-        border: solid 1px #7088bb;
-    }
-    a:hover {
-        color:#111111;
-        background: #a0b0f0;
-        border: solid 1px #666666;
-    }
-    a:active { //I don't think I'm actually using this...
-        background: #808BC2;
-        border: solid 1px #4050A0;
-    }
-}
+//     a {
+//         padding: .4em;
+//         border-radius: .2em;
+//         background: #c0d0f0;
+//         font-weight: bold;
+//         color: #333;
+//         border: solid 1px #7088bb;
+//     }
+//     a:hover {
+//         color:#111111;
+//         background: #a0b0f0;
+//         border: solid 1px #666666;
+//     }
+//     a:active { //I don't think I'm actually using this...
+//         background: #808BC2;
+//         border: solid 1px #4050A0;
+//     }
+// }
 
 
 /*HELP PANE
