@@ -2,13 +2,11 @@ GoL = (canvas_element, width, height) ->
     #############################
     ## 'Global' vars            #
     #############################
-    state_set =
-        empty:
-            "opacity": 0
-        alive:
-            "fill": "#1A301A"
-            "stroke-opacity": .2
-            "opactiy": 1
+    raising_color ="#005500" 
+    living_color = "#000055"
+    dying_color = "#550000"
+    stroke_opacity = 0.2
+    anim_duration = 200
 
 
     #############################
@@ -36,7 +34,7 @@ GoL = (canvas_element, width, height) ->
         @live_cells[x] ?= {}
         @live_cells[x][y] = 0
         @cell_count += 1
-        gol.view.colorRect x, y, state_set.alive
+        gol.view.addRect x, y
         undefined
 
     gol.model.killCell = (x, y) ->
@@ -166,7 +164,7 @@ GoL = (canvas_element, width, height) ->
     #rendered.
     gol.view.drawGrid = _.throttle((() ->
         @paper.clear()
-        #`@rects` gets repopulated in `@colorRect(. . .)`
+        #`@rects` gets repopulated in `@addRect(. . .)`
         @rects = []
 
         node_cols = 1 + Math.ceil @width / @scaled_node_size
@@ -190,18 +188,29 @@ GoL = (canvas_element, width, height) ->
         for x in [0-@grid_offset.x ... node_cols-@grid_offset.x]
             if gol.model.live_cells[x]?
                 for y in [0-@grid_offset.y ... node_rows-@grid_offset.y]
-                    @colorRect x, y, state_set.alive if gol.model.live_cells[x][y]?
+                    @addRect x, y if gol.model.live_cells[x][y]?
         undefined), 3)
 
-    gol.view.colorRect = (x, y, state) ->
+    gol.view.addRect = (x, y) ->
         grid_x = x + @grid_offset.x
         grid_y = y + @grid_offset.y
 
         @rects[grid_x] ?= []
-        @rects[grid_x][grid_y] ?= @paper.rect(grid_x * @scaled_node_size + @px_offset.x,
-                                              grid_y * @scaled_node_size + @px_offset.y,
-                                              @scaled_node_size, @scaled_node_size)
-        @rects[grid_x][grid_y].attr state
+        @rects[grid_x][grid_y] ?= 
+            @paper.rect(
+                grid_x * @scaled_node_size + @px_offset.x,
+                grid_y * @scaled_node_size + @px_offset.y,
+                @scaled_node_size, @scaled_node_size).
+            attr(
+                "fill": raising_color
+                "stroke-opacity": stroke_opacity
+                "transform": "s0.0"
+                "opacity": 0).
+            animate(
+                "transform": "s1.0"
+                "opacity": 1,
+                anim_duration)
+        console.log @rects[grid_x][grid_y].attr("fill")
         undefined
 
     gol.view.removeRect = (x, y) ->
@@ -209,7 +218,11 @@ GoL = (canvas_element, width, height) ->
         grid_y = y + @grid_offset.y
 
         if @rects[grid_x]?[grid_y]?
-            @rects[grid_x][grid_y].remove() 
+            @rects[grid_x][grid_y].animate(
+                "fill": dying_color
+                "opacity": 0
+                "transform": "s0.0",
+                anim_duration)
             delete @rects[grid_x][grid_y]
         undefined
 
@@ -294,6 +307,9 @@ GoL = (canvas_element, width, height) ->
 
     gol.ctrl.setHz = (hz) ->
         @hz = hz
+        anim_duration = 1000/(2*gol.ctrl.hz)
+        if anim_duration > 200 then anim_duration = 200
+        else if anim_duration < 30 then anim_duration = 0
         if @running?
             clearTimeout(@running)
             @running = setInterval (=> gol.model.step()), 1000/@hz
