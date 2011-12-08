@@ -1,9 +1,13 @@
-# This is identical to `$(document).ready([callback])`
 $( ->
     window.game_of_life = GoL("#draw_space", $(window).width(), $(window).height())
 
     ## UI Setup
     $(".movable_pane").draggable()
+
+    #Hide Anchor Functionality
+    $("#hide").on "click", (event) ->
+        $("#help_pane").slideUp()
+        undefined
 
     # Button on click event setup
     $("#step_reset_set").buttonset()

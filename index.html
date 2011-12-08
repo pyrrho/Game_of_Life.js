@@ -18,11 +18,14 @@
   <!--The Help Pane. Where the basics are explained. -->
   <div id="help_pane" class="movable_pane">
     <div class="tab_container content_pane">
-      <header><sub>my</sub>Game of Life</header>
+      <header>Game Of Life.js
+        <span><a id="hide">hide</a></span>
+      </header>
       <!--The Rules tab. -->
       <div id="tab_rules" class="tab_content">
-        <p>John Conway's <a href="http://en.wikipedia.org/wiki/Conway's_Game_of_Life">Game of Life.</a></p>
-        <ul>The rules are as follows:<br />For every generation
+        <p>Read the full description of <a href="http://en.wikipedia.org/wiki/Conway's_Game_of_Life">Conway's Game of Life.</a></p>
+        <ul>The rules are as follows:
+          <li>Every `generation` of the game, the cells are updated synchronously</li>
           <li>Any live cell with fewer than two live neighbors dies</li>
           <li>Any live cell with more than three live neighbors dies</li>
           <li>Any live cell with two or three live neighbors survives</li>
@@ -51,19 +54,19 @@
       <div id="tab_how" class="tab_content">
         <ul>
           <li>To start, <a href="http://www.quackit.com/html_5/tags/">HTML5</a> and <a href="http://www.w3schools.com/cssref/default.asp">CSS3</a>.</li>
-          <li><a href="http://www.ecmascript.org/">JavaScript</a> and&mdash;with much greater pleasure&mdash;<a href="http://coffeescript.org/">CoffeeScript</a>. I found <a href="http://yuiblog.com/crockford/">Douglas Crockford's</a> video lectures a wonderful JavaScript resource, and <a href="http://arcturo.github.com/library/coffeescript/">The Little Book on CoffeeScript</a> a great place to start there.</li>
-          <li><a href="http://sass-lang.com/">Sass</a> because screw CSS. Seriously. Screw CSS.</li>
-          <li><a href="http://raphaeljs.com/">Raphael.js</a> for all the vector graphics that make up the Game of Life canvas.</li>
+          <li><a href="http://www.ecmascript.org/">JavaScript</a> and&mdash;with much more ease&mdash;<a href="http://coffeescript.org/">CoffeeScript</a>. <a href="http://yuiblog.com/crockford/">Douglas Crockford's</a> video lectures on JavaScript are a wonderful resource, and <a href="http://arcturo.github.com/library/coffeescript/">The Little Book on CoffeeScript</a> a great place to start there.</li>
+          <li><a href="http://sass-lang.com/">Sass</a> because variables, and screw CSS. Seriously. Screw CSS.</li>
+          <li><a href="http://raphaeljs.com/">Raphael.js</a> for all the vector graphics that make up the canvas.</li>
           <li><a href="http://jquery.com/">JQuery</a> for... well, JQuery. <a href="http://jqueryui.com/">JQuery UI</a> for a few UI elements.</li>
           <li><a href="https://github.com/mynyml/watchr">Watchr</a> for providing continuous compiling and minifying.</li>
           <li>This is where I'll give props to the minifying hooplah.</li>
-          <li>Props to Xueqiao Xu(<a href="https://github.com/qiao/">qiao</a>) and his excellent <a href="https://github.com/qiao/PathFinding.js">PathFinding.js</a> library for a great starting point and even more inspiration.</li>
+          <li>Props to Xueqiao Xu(<a href="https://github.com/qiao/">qiao</a>) and his excellent <a href="https://github.com/qiao/PathFinding.js">PathFinding.js</a> library for a great starting point. Seriously. Go check it out.</li>
       </div>
     </div>
     <!--The actual tab side-bar. -->
     <ul class="tab_menu">
       <li class="open"><a href="#tab_rules">r<br />u<br />l<br />e<br />s</a></li>
-      <li><a href="#tab_ctrls">c<br />t<br />r<br />l<br />s</a></li>
+      <li><a href="#tab_ctrls">c<br />t<br />r<br />l</a></li>
       <!-- <li><a href="#tab_why">w<br />h<br />y</a></li> -->
       <li><a href="#tab_how">h<br />o<br />w</a></li>
     </ul>
@@ -71,7 +74,7 @@
 
   <!--The Control Pane. -->
   <div id="control_pane" class="movable_pane content_pane">
-    <p>Controls</p>
+    <h3>Controls</h3>
     <input type="checkbox" id="play" /><label for="play" id="play_label" class="jq_button">Play</label>
     <label for="hz">Hz</label><input type="text" id="hz" maxlength="2" size="1" value="8" />
     <br />

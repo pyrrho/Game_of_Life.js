@@ -1,36 +1,58 @@
+$content_bg_color: rgba(16,17,20,.6);
+$text_color: rgb(234,236,236);
+
+
 /*GENERAL STYLES
 -----*/
 body {
     font-family: Arial, Verdana, sans-serif;
     overflow: hidden;
+    color: $text_color;
+}
+
+p {
+    text-indent: 1em;
+    padding-left: -1em;
+    padding-bottom: .4em;
+}
+
+a {
+    color: $text_color;
 }
 
 sub {
     font-size: 80%;
-    font-style: italic;
     vertical-align: -15%;
 }
 
+header {
+    font-family: serif;
+    font-size: 1.4em;
+    font-weight: 100;
+    padding-bottom: .5em;
+
+    #hide {
+        font-size: .6em;
+        position: absolute;
+        right: 20px;
+        cursor: pointer;
+    }
+}
+
+
 /*CONTENT PANES
 -----*/
-$content_bg_color: rgba(68,79,87,.8);
-$text_color: rgb(0,0,0);
-
 div.content_pane {
     border-radius: 12px;
     padding: 10px;
     background: $content_bg_color;
-
-    p {
-        padding-bottom: .4em;
-    }
+    box-shadow: 2px 2px 16px rgba(0,0,0,.6);
 
     strong {
         font-weight: bold;
     }
 
     a {
-        color: $text_color;
         font-variant: small-caps;
         // text-decoration: none;
     }
@@ -38,11 +60,17 @@ div.content_pane {
     ul {
         list-style: none inside;
     }
+    li:first-child {
+        margin-top: .3em;
+    }
     li {
-        padding-left: 2em;
+        margin-left: .4em;
+        padding-left: .3em;
         // text-indent: -1em;
-        padding-bottom: .2em;
-
+        margin-bottom: .4em;
+        border-bottom-left-radius: .4em;
+        border-top-left-radius: 1px .4em;
+        border-left: solid 3px $text_color;
     }
 }
 
@@ -50,8 +78,14 @@ div.content_pane {
 -----*/
 #control_pane {
     position: absolute;
-    width: 200px;
+    width: 145px;
     top: 40px; right: 40px;
+
+    h3 {
+        font-size: 1.2em;
+        font-family: serif;
+        padding-bottom: .2em;
+    }
 
     .jq_button {
         font-size: .7em;
@@ -59,32 +93,10 @@ div.content_pane {
 }
 #hz_slider {
     display: inline-block;
+    cursor: pointer;
     width: 100%;
     font-size: .5em;
 }
-
-// div.button_set { //Pure CSS buttons.
-//     display: inline-block;
-//     height: 1.2em;
-
-//     a {
-//         padding: .4em;
-//         border-radius: .2em;
-//         background: #c0d0f0;
-//         font-weight: bold;
-//         color: #333;
-//         border: solid 1px #7088bb;
-//     }
-//     a:hover {
-//         color:#111111;
-//         background: #a0b0f0;
-//         border: solid 1px #666666;
-//     }
-//     a:active { //I don't think I'm actually using this...
-//         background: #808BC2;
-//         border: solid 1px #4050A0;
-//     }
-// }
 
 
 /*HELP PANE
@@ -98,11 +110,11 @@ div.content_pane {
 }
 
 // Pure CSS tabs
-// Based on Soh Tanaka's CSS tabs.
+// Based (loosely) on Soh Tanaka's CSS tabs.
 // http://www.sohtanaka.com/web-design/simple-tabs-w-css-jquery/
-$tab_open_color: rgba(68,79,87,.8);
-$tab_hover_color: rgba(125,133,144,.8);
-$tab_idle_color: rgba(181,189,200,.8);
+$tab_open_color: $content_bg_color;
+$tab_hover_color: lighten($tab_open_color, 25%);
+$tab_idle_color: lighten($tab_open_color, 50%);
 
 @mixin open_tab_base {
     background: $tab_open_color;
@@ -127,23 +139,25 @@ ul.tab_menu {
         border-top-left-radius: 12px;
         border-bottom-left-radius: 12px;
         padding: 16px 4px;
-        background: lighten($tab_open_color, 30%);
-        box-shadow: 0px 0px 0px rgba(0, 0, 0, .6);
+        background: $tab_idle_color;
+        box-shadow:0px 0px 8px rgba(0,0,0,.6);
         -webkit-transition: all .25s ease;
     }
     li:hover {
-        background: lighten($tab_open_color, 15%);
+        background: $tab_hover_color;
         margin-top: -2px; margin-bottom: 2px;
         margin-left: -4px; margin-right: 4px;
-        box-shadow:0px 0px 8px rgba(0,0,0,.6);
+        box-shadow: 0px 0px 0px rgba(0, 0, 0, .6);
         -webkit-transition: all .25s ease;
     }
     li.open {
         @include open_tab_base;
+        box-shadow: 0px 0px 0px rgba(0, 0, 0, .6);
         -webkit-transition: all .25s ease;
     }
     li.open:hover { //Here to make sure open tabs don't hover
         @include open_tab_base;
+        box-shadow: 0px 0px 0px rgba(0, 0, 0, .6);
         margin-left: 0px; margin-right: 0px;
     }
 }
@@ -151,7 +165,7 @@ ul.tab_menu {
 div.tab_container { //Tab Content style
     float: right;
     width: 255px;
-    min-height: 350px;
+    min-height: 370px;
     display: block;
     padding-left: 15px;
 }
@@ -177,6 +191,10 @@ footer {
     background: rgba(255, 255, 255, 0.5);
     padding: 5px;
     border-radius: 5px;
+
+    a {
+        color: #33A;
+    }
 }
 
 
