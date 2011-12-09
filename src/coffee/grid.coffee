@@ -7,7 +7,7 @@ GoL = (canvas_element, width, height) ->
     dying_color = "#550000"
     stroke_opacity = 0.2
     anim_duration = 200
-
+    
 
     #############################
     ## Object declarations      #
@@ -17,6 +17,11 @@ GoL = (canvas_element, width, height) ->
     gol.view = {}
     gol.ctrl = {}
 
+    cell = (born) ->
+        birthday: born
+        deathday: -1
+        state: "born"
+        neighbors: 0
 
     ##############################
     ## Model                     #
@@ -32,7 +37,7 @@ GoL = (canvas_element, width, height) ->
 
     gol.model.raiseCell = (x, y) ->
         @live_cells[x] ?= {}
-        @live_cells[x][y] = 0
+        @live_cells[x][y] = cell(@current_step)
         @cell_count += 1
         gol.view.addRect x, y
         undefined
@@ -52,39 +57,38 @@ GoL = (canvas_element, width, height) ->
         #Wow... This is just.... Wow... So much kludge...
         @current_step += 1
         seeds = {}
-        #I think this guy has been getting GC'd... why?
-        ns = neighbor_set
         #So this shitstorm is supposed to roll through, hit every live
         #cell, and increment the neighbor count of all its neighbor_set
         #by one, checking to see if said neighbor is already alive.
-        for x_s, cell_col of @live_cells
-            for y_s, neighbor_count of cell_col
-                x = parseInt(x_s)
-                y = parseInt(y_s)
+        for x_string, cell_col of @live_cells
+            for y_string, cell of cell_col
+                x = parseInt(x_string)
+                y = parseInt(y_string)
                 for n in neighbor_set
                     if @live_cells[n[0]+x]?[n[1]+y]?
-                        @live_cells[n[0]+x][n[1]+y] += 1
+                        @live_cells[n[0]+x][n[1]+y].neighbors += 1
                     else
                         seeds[n[0]+x] ?= {}
                         seeds[n[0]+x][n[1]+y] ?= 0
                         seeds[n[0]+x][n[1]+y] += 1
         #Here we go _back_ over all them live cells, and kill the ones
         #that are either too friendly, or too lonely.
-        for x_s, cell_col of @live_cells
-            for y_s, neighbor_count of cell_col
+        for x_string, cell_col of @live_cells
+            for y_string, cell of cell_col
+                neighbor_count = cell.neighbors
                 if neighbor_count isnt 2 and neighbor_count isnt 3
-                    x = parseInt(x_s)
-                    y = parseInt(y_s)
+                    x = parseInt(x_string)
+                    y = parseInt(y_string)
                     @killCell(x, y)
                 else
-                    @live_cells[x_s][y_s] = 0
-        #Now we go through the list of effected dead cells, and see if
+                    cell.neighbors = 0
+        #Now we go through the list of effected, dead cells, and see if
         #any of them should be coming to life or not.
-        for x_s, cell_col of seeds
-            for y_s, neighbor_count of cell_col
+        for x_string, cell_col of seeds
+            for y_string, neighbor_count of cell_col
                 if neighbor_count is 3
-                    x = parseInt(x_s)
-                    y = parseInt(y_s)
+                    x = parseInt(x_string)
+                    y = parseInt(y_string)
                     @raiseCell(x, y)
         undefined
 
