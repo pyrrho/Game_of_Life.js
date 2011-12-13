@@ -2,11 +2,11 @@ GoL = (canvas_element, width, height) ->
     #############################
     ## 'Global' vars            #
     #############################
-    raising_color ="#005500" 
+    raising_color = "#005500" 
     living_color = "#000055"
     dying_color = "#550000"
     stroke_opacity = 0.2
-    anim_duration = 200
+    anim_duration = 62.5
     
 
     #############################
@@ -26,18 +26,20 @@ GoL = (canvas_element, width, height) ->
     ##############################
     ## Model                     #
     ##############################
-    neighbor_set = [[ 1, 0], [ 1,-1],
-                    [ 0,-1], [-1,-1],
-                    [-1, 0], [-1, 1],
-                    [ 0, 1], [ 1, 1]]
+    neighbor_set = [{x: 1, y: 0}, {x: 1, y:-1},
+                    {x: 0, y:-1}, {x:-1, y:-1},
+                    {x:-1, y: 0}, {x:-1, y: 1},
+                    {x: 0, y: 1}, {x: 1, y: 1}]
 
     gol.model.current_step = 0
     gol.model.cell_count = 0
     gol.model.live_cells = {}
+    gol.model.fresh_cells = []
 
     gol.model.raiseCell = (x, y) ->
         @live_cells[x] ?= {}
         @live_cells[x][y] = cell(@current_step)
+        @fresh_cells.push [x, y]
         @cell_count += 1
         gol.view.addRect x, y
         undefined
@@ -64,24 +66,32 @@ GoL = (canvas_element, width, height) ->
             for y_string, cell of cell_col
                 x = parseInt(x_string)
                 y = parseInt(y_string)
-                for n in neighbor_set
-                    if @live_cells[n[0]+x]?[n[1]+y]?
-                        @live_cells[n[0]+x][n[1]+y].neighbors += 1
+                for neighbor in neighbor_set
+                    if @live_cells[x+neighbor.x]?[y+neighbor.y]?
+                        @live_cells[x+neighbor.x][y+neighbor.y].neighbors += 1
                     else
-                        seeds[n[0]+x] ?= {}
-                        seeds[n[0]+x][n[1]+y] ?= 0
-                        seeds[n[0]+x][n[1]+y] += 1
+                        seeds[x+neighbor.x] ?= {}
+                        seeds[x+neighbor.x][y+neighbor.y] ?= 0
+                        seeds[x+neighbor.x][y+neighbor.y] += 1
         #Here we go _back_ over all them live cells, and kill the ones
         #that are either too friendly, or too lonely.
         for x_string, cell_col of @live_cells
             for y_string, cell of cell_col
                 neighbor_count = cell.neighbors
                 if neighbor_count isnt 2 and neighbor_count isnt 3
+                    #This `parseInt`ing doesn't necessary need to be
+                    #here, but x and y do need to be ints by the time
+                    #we get to `gol.view.removeRect`.
                     x = parseInt(x_string)
                     y = parseInt(y_string)
                     @killCell(x, y)
                 else
                     cell.neighbors = 0
+        #Not quite done with the live cells, we have to move through
+        #last-step's fresh cells, and color them apropriately.
+        for [x, y] in @fresh_cells
+            gol.view.fadeRectToLiving x, y
+        @fresh_cells = []
         #Now we go through the list of effected, dead cells, and see if
         #any of them should be coming to life or not.
         for x_string, cell_col of seeds
@@ -110,6 +120,7 @@ GoL = (canvas_element, width, height) ->
     #`"#html_id"`, and for some reason Raphael wants to look for it in
     #the form `"html_id"`, so we're indulging it with the slice op.
     gol.view.paper = Raphael canvas_element.slice(1)
+    gol.view.rects = {}
     
     gol.view.width = 0
     gol.view.height = 0
@@ -117,7 +128,7 @@ GoL = (canvas_element, width, height) ->
     gol.view.scaled_node_size = node_size
 
     gol.view.zoom_offset = x: 0.5, y: 0.5
-    gol.view.offset = x: 0, y: 0
+    gol.view.offset = x: 0, y: 0 #Offset from the origin.
     gol.view.grid_offset = x: 0, y :0
     gol.view.px_offset = x: 0, y: 0
 
@@ -127,7 +138,7 @@ GoL = (canvas_element, width, height) ->
         @drawGrid()
         undefined
     
-    gol.view.set_zoom_offset = (page_x, page_y) ->
+    gol.view.setZoomOffset = (page_x, page_y) ->
         @zoom_offset = x: page_x / @width, y: page_y / @height
         undefined
 
@@ -169,7 +180,7 @@ GoL = (canvas_element, width, height) ->
     gol.view.drawGrid = _.throttle((() ->
         @paper.clear()
         #`@rects` gets repopulated in `@addRect(. . .)`
-        @rects = []
+        @rects = {}
 
         node_cols = 1 + Math.ceil @width / @scaled_node_size
         node_rows = 1 + Math.ceil @height / @scaled_node_size
@@ -192,14 +203,14 @@ GoL = (canvas_element, width, height) ->
         for x in [0-@grid_offset.x ... node_cols-@grid_offset.x]
             if gol.model.live_cells[x]?
                 for y in [0-@grid_offset.y ... node_rows-@grid_offset.y]
-                    @addRect x, y if gol.model.live_cells[x][y]?
+                    @drawRect x, y if gol.model.live_cells[x][y]?
         undefined), 3)
 
     gol.view.addRect = (x, y) ->
         grid_x = x + @grid_offset.x
         grid_y = y + @grid_offset.y
 
-        @rects[grid_x] ?= []
+        @rects[grid_x] ?= {}
         @rects[grid_x][grid_y] ?= 
             @paper.rect(
                 grid_x * @scaled_node_size + @px_offset.x,
@@ -207,36 +218,66 @@ GoL = (canvas_element, width, height) ->
                 @scaled_node_size, @scaled_node_size).
             attr(
                 "fill": raising_color
-                "stroke-opacity": stroke_opacity
+                "stroke-opacity": 0
                 "transform": "s0.0"
                 "opacity": 0).
             animate(
                 "transform": "s1.0"
                 "opacity": 1,
                 anim_duration)
-        console.log @rects[grid_x][grid_y].attr("fill")
         undefined
+
+    gol.view.drawRect = (x, y) ->
+        grid_x = x + @grid_offset.x
+        grid_y = y + @grid_offset.y
+
+        if gol.model.live_cells[x][y].birthday is gol.model.current_step
+            fill = raising_color 
+        else
+            fill = living_color
+
+        @rects[grid_x] ?= {}
+        @rects[grid_x][grid_y] ?= 
+            @paper.rect(
+                grid_x * @scaled_node_size + @px_offset.x,
+                grid_y * @scaled_node_size + @px_offset.y,
+                @scaled_node_size, @scaled_node_size).
+            attr(
+                "fill": fill
+                "stroke-opacity": 0)
 
     gol.view.removeRect = (x, y) ->
         grid_x = x + @grid_offset.x
         grid_y = y + @grid_offset.y
 
         if @rects[grid_x]?[grid_y]?
-            @rects[grid_x][grid_y].animate(
+            @rects[grid_x][grid_y].
+            attr(
                 "fill": dying_color
+            ).
+            animate(
                 "opacity": 0
                 "transform": "s0.0",
                 anim_duration)
             delete @rects[grid_x][grid_y]
+            if $.isEmptyObject @rects[grid_x]
+                delete @rects[grid_x]
         undefined
 
+    gol.view.fadeRectToLiving = (x, y) ->
+        grid_x = x + @grid_offset.x
+        grid_y = y + @grid_offset.y
+
+        if @rects[grid_x]?[grid_y]?
+            @rects[grid_x][grid_y].animate {"fill": living_color}, anim_duration
+        
     gol.view.pageToGrid = (page_x, page_y) ->
         x: Math.floor((page_x-@px_offset.x)/@scaled_node_size),
         y: Math.floor((page_y-@px_offset.y)/@scaled_node_size)
     
     gol.view.pageToAbs = (page_x, page_y) ->
-        x: Math.floor((page_x-@px_offset.x)/@scaled_node_size) - gol.view.grid_offset.x,
-        y: Math.floor((page_y-@px_offset.y)/@scaled_node_size) - gol.view.grid_offset.y
+        x: Math.floor((page_x-@px_offset.x)/@scaled_node_size) - @grid_offset.x,
+        y: Math.floor((page_y-@px_offset.y)/@scaled_node_size) - @grid_offset.y
 
 
     #############################
@@ -260,7 +301,7 @@ GoL = (canvas_element, width, height) ->
         abs = gol.view.pageToAbs(page_x, page_y)
         #Starting a zoom?
         if @active[mouse_left] and @active[mouse_right]
-            gol.view.set_zoom_offset(page_x, page_y)
+            gol.view.setZoomOffset(page_x, page_y)
         #Or messing with cells?
         else if @active[mouse_left]
             if gol.model.isAliveAt abs.x, abs.y
