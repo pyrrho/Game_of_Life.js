@@ -34,7 +34,7 @@ header {
     #hide {
         font-size: .6em;
         position: absolute;
-        right: 20px;
+        right: 10px;
         cursor: pointer;
     }
 }
@@ -70,7 +70,7 @@ div.content_pane {
         margin-bottom: .4em;
         border-bottom-left-radius: .4em;
         border-top-left-radius: 1px .4em;
-        border-left: solid 3px $text_color;
+        border-left: solid 2px rgba($text_color, .8);
     }
 }
 
