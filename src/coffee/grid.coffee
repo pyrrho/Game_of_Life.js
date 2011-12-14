@@ -2,11 +2,10 @@ GoL = (canvas_element, width, height) ->
     #############################
     ## 'Global' vars            #
     #############################
-    raising_color = "#005500" 
-    living_color = "#000055"
+    raising_color = "#005500"
     dying_color = "#550000"
     stroke_opacity = 0.2
-    anim_duration = 62.5
+    anim_duration = 125
     
 
     #############################
@@ -56,24 +55,30 @@ GoL = (canvas_element, width, height) ->
         @live_cells[x]?[y]?
 
     gol.model.step = () ->
-        #Wow... This is just.... Wow... So much kludge...
+        #There's a better way to do this. Instead of repopulating the
+        #`neighbor` counter and `seeds` object, `raiseCell` and
+        #`killCell` should do the [in|de]crement.
+        #TODO: Start a real TODO list and add this alteration to it.
         @current_step += 1
         seeds = {}
-        #So this shitstorm is supposed to roll through, hit every live
-        #cell, and increment the neighbor count of all its neighbor_set
-        #by one, checking to see if said neighbor is already alive.
+        #Step one, roll through the `live_cells` and increment its
+        #neighbors' `neighbors` counter by one. (Well that was
+        #unnecessarily repetitive.)
         for x_string, cell_col of @live_cells
             for y_string, cell of cell_col
                 x = parseInt(x_string)
                 y = parseInt(y_string)
                 for neighbor in neighbor_set
+                    #Of course, we only increment the `neighbor` count
+                    #of cells that are already alive...
                     if @live_cells[x+neighbor.x]?[y+neighbor.y]?
                         @live_cells[x+neighbor.x][y+neighbor.y].neighbors += 1
+                    #Otherwise, we populate the `seeds` object.
                     else
                         seeds[x+neighbor.x] ?= {}
                         seeds[x+neighbor.x][y+neighbor.y] ?= 0
                         seeds[x+neighbor.x][y+neighbor.y] += 1
-        #Here we go _back_ over all them live cells, and kill the ones
+        #Here we go _back_ over all the live cells, and kill the ones
         #that are either too friendly, or too lonely.
         for x_string, cell_col of @live_cells
             for y_string, cell of cell_col
@@ -87,13 +92,8 @@ GoL = (canvas_element, width, height) ->
                     @killCell(x, y)
                 else
                     cell.neighbors = 0
-        #Not quite done with the live cells, we have to move through
-        #last-step's fresh cells, and color them apropriately.
-        for [x, y] in @fresh_cells
-            gol.view.fadeRectToLiving x, y
-        @fresh_cells = []
-        #Now we go through the list of effected, dead cells, and see if
-        #any of them should be coming to life or not.
+        #Now we go through the seeded cells, and see if any of them
+        #should be coming to life.
         for x_string, cell_col of seeds
             for y_string, neighbor_count of cell_col
                 if neighbor_count is 3
@@ -215,14 +215,15 @@ GoL = (canvas_element, width, height) ->
             @paper.rect(
                 grid_x * @scaled_node_size + @px_offset.x,
                 grid_y * @scaled_node_size + @px_offset.y,
-                @scaled_node_size, @scaled_node_size).
+                @scaled_node_size, @scaled_node_size,
+                @scaled_node_size/5).
             attr(
                 "fill": raising_color
-                "stroke-opacity": 0
-                "transform": "s0.0"
+                "stroke-opacity": 0.2
+                "transform": "S0.0"
                 "opacity": 0).
             animate(
-                "transform": "s1.0"
+                "transform": "S1.0"
                 "opacity": 1,
                 anim_duration)
         undefined
@@ -231,20 +232,16 @@ GoL = (canvas_element, width, height) ->
         grid_x = x + @grid_offset.x
         grid_y = y + @grid_offset.y
 
-        if gol.model.live_cells[x][y].birthday is gol.model.current_step
-            fill = raising_color 
-        else
-            fill = living_color
-
         @rects[grid_x] ?= {}
         @rects[grid_x][grid_y] ?= 
             @paper.rect(
                 grid_x * @scaled_node_size + @px_offset.x,
                 grid_y * @scaled_node_size + @px_offset.y,
-                @scaled_node_size, @scaled_node_size).
+                @scaled_node_size, @scaled_node_size,
+                @scaled_node_size/5).
             attr(
-                "fill": fill
-                "stroke-opacity": 0)
+                "fill": raising_color
+                "stroke-opacity": 0.2)
 
     gol.view.removeRect = (x, y) ->
         grid_x = x + @grid_offset.x
@@ -257,19 +254,17 @@ GoL = (canvas_element, width, height) ->
             ).
             animate(
                 "opacity": 0
-                "transform": "s0.0",
+                "transform": "S0.0",
                 anim_duration)
+            _.delay ((rect) ->
+                        rect.remove() if rect.node.parentNode?
+                        undefined),
+                    anim_duration,
+                    @rects[grid_x][grid_y]
             delete @rects[grid_x][grid_y]
             if $.isEmptyObject @rects[grid_x]
                 delete @rects[grid_x]
         undefined
-
-    gol.view.fadeRectToLiving = (x, y) ->
-        grid_x = x + @grid_offset.x
-        grid_y = y + @grid_offset.y
-
-        if @rects[grid_x]?[grid_y]?
-            @rects[grid_x][grid_y].animate {"fill": living_color}, anim_duration
         
     gol.view.pageToGrid = (page_x, page_y) ->
         x: Math.floor((page_x-@px_offset.x)/@scaled_node_size),
@@ -292,7 +287,7 @@ GoL = (canvas_element, width, height) ->
     gol.ctrl.page_last = x: 0, y: 0
     gol.ctrl.abs_last = x: 0, y: 0
     gol.ctrl.moving = false
-    gol.ctrl.hz = 8
+    gol.ctrl.hz = 4
     gol.ctrl.running = undefined
 
     gol.ctrl.resolveMousedown = (page_x, page_y, button) ->

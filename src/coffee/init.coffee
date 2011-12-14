@@ -36,12 +36,12 @@ $( ->
         undefined
     
     #That slider.
-    min_hz = 0
+    min_hz = 1
     max_hz = 50
     $("#hz_slider").slider(
         min: min_hz
         max: max_hz
-        value: 8
+        value: 4
         step: 1
         slide: (event, ui) ->
             $("#hz").val ui.value
