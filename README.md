@@ -33,3 +33,10 @@ Finally I have to give major thanks to [Xueqiao Xu](https://github.com/qiao/) an
 ### License ###
 
 This project is released under the [MIT License](http://www.opensource.org/licenses/mit-license.php).
+
+-----
+
+#### To Dos ####
+
+ * Implement & test on Firefox, Opera, Safari.... IE?
+ * Add `Turn off Animations` check box

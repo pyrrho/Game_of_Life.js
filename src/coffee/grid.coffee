@@ -224,7 +224,8 @@ GoL = (canvas_element, width, height) ->
                 "opacity": 0).
             animate(
                 "transform": "S1.0"
-                "opacity": 1,
+                "opacity": 1
+                "stroke-width": 1,
                 anim_duration)
         undefined
 
@@ -241,7 +242,8 @@ GoL = (canvas_element, width, height) ->
                 @scaled_node_size/5).
             attr(
                 "fill": raising_color
-                "stroke-opacity": 0.2)
+                "stroke-opacity": 0.2
+                "stroke-width": 1)
 
     gol.view.removeRect = (x, y) ->
         grid_x = x + @grid_offset.x
