@@ -1,0 +1,95 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Game of Life.js&mdash;a CoffeeScript, Sass, and HTML5 experiment</title>
+  <meta name="description" content="A simple implementation of Conway's Game of Life using CoffeeScript, CSS3 and HTML5." />
+
+  <link rel="stylesheet" href="./dev/css/reset.css" />
+  <link rel="stylesheet" href="./dev/css/main.css" />
+  <link rel="stylesheet" href="./dev/css/jquery-ui/jquery-ui-1.8.16.custom.css" />
+</head>
+
+<body>
+  <!--This is the element subsumed by Raphael, on which all of the
+      vector images are to be drawn. It maybe should be a canvas. -->
+  <div id="draw_space"></div>
+
+  <!--The Help Pane. Where the basics are explained. -->
+  <div id="help_pane" class="movable_pane">
+    <div class="tab_container content_pane">
+      <header>Game Of Life.js
+        <span><a id="hide">hide</a></span>
+      </header>
+      <!--The Rules tab. -->
+      <div id="tab_rules" class="tab_content">
+        <p>Read the full description of <a href="http://en.wikipedia.org/wiki/Conway's_Game_of_Life">Conway's Game of Life.</a></p>
+        <ul>The rules are as follows:
+          <li>Every `generation` of the game, the cells are updated synchronously</li>
+          <li>Any live cell with fewer than two live neighbors dies</li>
+          <li>Any live cell with more than three live neighbors dies</li>
+          <li>Any live cell with two or three live neighbors survives</li>
+          <li>Any dead cell with exactly three live neighbors becomes alive</li>
+        </ul>
+      </div>
+      <!--Controls tab. -->
+      <div id="tab_ctrls" class="tab_content">
+        <ul>The basic controls are:
+          <li>Left-click any empty cell to 'raise' it&ndash;to make it alive</li>
+          <li>Left-click any live cell to kill it</li>
+          <li>Left-click and drag to either batch raise or batch kill cells</li>
+          <li>Right-click and drag anywhere on the board to move the view frustum</li>
+          <li>Hold both the Left and Right mouse buttons to zoom&ndash;up to zoom in, down to zoom out</li>
+        </ul>
+        <p>The control pane to the right will allow you to play/pause the simulation, take a single step to the next generation, set the speed of the simulation, and completely reset the board.</p>
+        <p>All visible panes are movable, and you can hide this help pane by clicking the <a>hide</a> anchor to the right of the title text.</p> 
+      </div>
+      <!--The Credits tab. -->
+      <div id="tab_how" class="tab_content">
+        <ul>
+          <li>To start, <a href="http://www.quackit.com/html_5/tags/">HTML5</a> and <a href="http://www.w3schools.com/cssref/default.asp">CSS3</a>.</li>
+          <li><a href="http://www.ecmascript.org/">JavaScript</a> and&mdash;with much greater ease&mdash;<a href="http://coffeescript.org/">CoffeeScript</a>. <a href="http://yuiblog.com/crockford/">Douglas Crockford's</a> video lectures on JavaScript are a wonderful resource, and <a href="http://arcturo.github.com/library/coffeescript/">The Little Book on CoffeeScript</a> a great place to start there.</li>
+          <li><a href="http://sass-lang.com/">Sass</a> because variables, and screw CSS. Seriously.<br />Screw CSS.</li>
+          <li><a href="http://raphaeljs.com/">Raphael.js</a> for all the vector graphics that make up the canvas.</li>
+          <li><a href="http://jquery.com/">JQuery</a> for... well, JQuery. <a href="http://jqueryui.com/">JQuery UI</a> for a few UI elements, and <a href="http://documentcloud.github.com/underscore/">Underscore.js</a> for a couple really awesome helper functions.</li> 
+          <li><a href="https://github.com/mynyml/watchr">Watchr</a> for providing continuous compilation.</li>
+          <li>Finally, props to Xueqiao Xu(<a href="https://github.com/qiao/">qiao</a>) and his excellent <a href="https://github.com/qiao/PathFinding.js">PathFinding.js</a> library for a great starting point.<br />Go check it out. Seriously.</li>
+      </div>
+    </div>
+    <!--The actual tab side-bar. -->
+    <ul class="tab_menu">
+      <li class="open"><a href="#tab_rules">r<br />u<br />l<br />e<br />s</a></li>
+      <li><a href="#tab_ctrls">c<br />t<br />r<br />l</a></li>
+      <!-- <li><a href="#tab_why">w<br />h<br />y</a></li> -->
+      <li><a href="#tab_how">h<br />o<br />w</a></li>
+    </ul>
+  </div>
+
+  <!--The Control Pane. -->
+  <div id="control_pane" class="movable_pane content_pane">
+    <h3>Controls</h3>
+    <input type="checkbox" id="play" /><label for="play" id="play_label" class="jq_button">Play</label>
+    <label for="hz">Hz</label><input type="text" id="hz" maxlength="2" size="1" value="4" />
+    <br />
+    <span id="hz_slider"></span>
+    <br />
+    <span id="step_reset_set">
+      <input type="button" id="step" value="Step" class="jq_button"/>
+      <input type="button" id="reset" /value="Reset" class="jq_button"/>
+    </span>
+  </div>
+
+  <footer>
+      Tested (only) on <a href="https://www.google.com/chrome">Google Chrome</a><br />
+      Project Hosted on <a href="http://github.com/TheOnlyRew/myGame_of_Life">Github</a>
+  </footer>
+
+  <!--And then there was JavaScript. And CoffeeScript too, but it
+      was already compiled, so whatever. -->
+  <script src="./min/lib/jquery-1.7.1.min.js"></script>
+  <script src="./min/lib/jquery-ui-1.8.16.custom.min.js"></script>
+  <script src="./min/lib/raphael-min.js"></script>  
+  <script src="./min/lib/underscore-min.js"></script>
+  
+  <script src="./dev/js/GoL.coffee.js"></script>
+</body>
