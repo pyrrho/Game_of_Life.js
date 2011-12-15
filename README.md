@@ -26,6 +26,8 @@ As a bonus to JQuery, I took advantage of a few of the amazingly cool helper fun
 
 For the vector images that make up the canvas, I used [Raphael.js](http://raphaeljs.com/). There were a few quirks I ran into with this library, but they all boiled down to me not fully understanding SVGs, rather than Raphael not acting like a well-versed user would expect. So nuts to SVGs, I guess.
 
+Because I didn't feel like bloating my stylesheet with vendor-specific prefixes (I mean, I had all of one vendor-specific rule... ¬_¬), I decided to play around with Lea Verou's [Prefix-Free](http://leaverou.github.com/prefixfree/). It got rid of a headache I didn't even have!
+
 Finally I have to give major thanks to [Xueqiao Xu](https://github.com/qiao/) and his excellent [PathFinding.js](https://github.com/qiao/PathFinding.js) library which acted as a fantastic starting point for me. I've since moved a pretty good distance away from his work, but still. Good stuff.
 
 -----
