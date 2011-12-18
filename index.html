@@ -5,10 +5,10 @@
   <title>Game of Life.js&mdash;a CoffeeScript, Sass, and HTML5 experiment</title>
   <meta name="description" content="A simple implementation of Conway's Game of Life using CoffeeScript, CSS3 and HTML5." />
 
+  <script src="./min/lib/prefixfree.min.js"></script>
   <link rel="stylesheet" href="./dev/css/reset.css" />
   <link rel="stylesheet" href="./dev/css/main.css" />
   <link rel="stylesheet" href="./dev/css/jquery-ui/jquery-ui-1.8.16.custom.css" />
-  <script src="./min/lib/prefixfree.min.js"></script>
 </head>
 
 <body>
@@ -59,7 +59,7 @@
       </div>
     </div>
     <!--The actual tab side-bar. -->
-    <ul class="tab_menu">
+    <ul class="tab_menu no_drag">
       <li class="open"><a href="#tab_rules">r<br />u<br />l<br />e<br />s</a></li>
       <li><a href="#tab_ctrls">c<br />t<br />r<br />l</a></li>
       <!-- <li><a href="#tab_why">w<br />h<br />y</a></li> -->
@@ -70,12 +70,12 @@
   <!--The Control Pane. -->
   <div id="control_pane" class="movable_pane content_pane">
     <h3>Controls</h3>
-    <input type="checkbox" id="play" /><label for="play" id="play_label" class="jq_button">Play</label>
-    <label for="hz">Hz</label><input type="text" id="hz" maxlength="2" size="1" value="4" />
+    <input type="checkbox" id="play" /><label for="play" id="play_label" class="jq_button no_drag">Play</label>
+    <label for="hz">Hz</label><input type="text" id="hz" maxlength="2" size="1" value="4" class="no_drag" />
     <br />
     <span id="hz_slider"></span>
     <br />
-    <span id="step_reset_set">
+    <span id="step_reset_set" class="no_drag" >
       <input type="button" id="step" value="Step" class="jq_button"/>
       <input type="button" id="reset" /value="Reset" class="jq_button"/>
     </span>

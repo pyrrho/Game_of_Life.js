@@ -477,7 +477,9 @@
   $(function() {
     var max_hz, min_hz, play;
     window.game_of_life = GoL("#draw_space", $(window).width(), $(window).height());
-    $(".movable_pane").draggable();
+    $(".movable_pane").draggable({
+      cancel: ".no_drag"
+    });
     $("#hide").on("click", function(event) {
       $("#help_pane").slideUp();
       return;
