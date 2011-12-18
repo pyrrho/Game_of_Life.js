@@ -374,7 +374,7 @@ GoL = (canvas_element, width, height) ->
     #############################
     #Setting callbacks  
     #Closing over this bit of setup to keep the namespace from getting
-    #poluted by cached init logic.
+    #polluted by cached init logic.
     ( ->
         $raphael = $(canvas_element)
 

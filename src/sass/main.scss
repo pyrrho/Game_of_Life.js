@@ -39,6 +39,13 @@ header {
     }
 }
 
+/*In an attempt to make non-draggable components non-selectable
+*/
+.no_drag {
+    user-select: none;
+    -webkit-user-select: none;
+}
+
 
 /*CONTENT PANES
 -----*/
@@ -142,17 +149,20 @@ ul.tab_menu {
         background: $tab_idle_color;
         box-shadow:0px 0px 8px rgba(0,0,0,.6);
         transition: all .25s ease;
+        -webkit-transition: all .25s ease;
     }
     li:hover {
         background: $tab_hover_color;
         margin-top: -2px; margin-bottom: 2px;
         box-shadow: 0px 0px 0px rgba(0, 0, 0, .6);
         transition: all .25s ease;
+        -webkit-transition: all .25s ease;
     }
     li.open {
         @include open_tab_base;
         box-shadow: 0px 0px 0px rgba(0, 0, 0, .6);
         transition: all .25s ease;
+        -webkit-transition: all .25s ease;
     }
     li.open:hover { //Here to make sure open tabs don't hover
         @include open_tab_base;

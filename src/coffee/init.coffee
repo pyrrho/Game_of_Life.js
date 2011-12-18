@@ -1,15 +1,18 @@
 $( ->
     window.game_of_life = GoL("#draw_space", $(window).width(), $(window).height())
 
-    ## UI Setup
-    $(".movable_pane").draggable()
+    #UI Setup
+    #=====
+
+    #Make the marked panes draggable
+    $(".movable_pane").draggable {cancel: ".no_drag"}
 
     #Hide Anchor Functionality
     $("#hide").on "click", (event) ->
         $("#help_pane").slideUp()
         undefined
 
-    # Button on click event setup
+    #Button on click event setup
     $("#step_reset_set").buttonset()
 
     play = false
@@ -34,7 +37,7 @@ $( ->
         if play
             $("#play").click()
         undefined
-    
+
     #That slider.
     min_hz = 1
     max_hz = 50
