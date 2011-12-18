@@ -40,4 +40,5 @@ This project is released under the [MIT License](http://www.opensource.org/licen
   
 #### To Dos ####
 
+ * Holy crap OSX/Forcably enabled context menus! Fix the Mouse Interaction.
  * Add `Turn off Animations` check box
