@@ -69,20 +69,33 @@
 
   <!--The Control Pane. -->
   <div id="control_pane" class="movable_pane content_pane">
-    <h3>Controls</h3>
-    <input type="checkbox" id="play" /><label for="play" id="play_label" class="jq_button no_drag">Play</label>
-    <label for="hz">Hz</label><input type="text" id="hz" maxlength="2" size="1" value="4" class="no_drag" />
+    <h3>Simulation</h3>
+    <input type="checkbox" id="play" />
+    <label for="play" class="jq_button no_drag">Play</label>
+    <label for="hz">Hz</label>
+    <input type="text" id="hz" maxlength="2" size="1" value="4" class="no_drag" />
     <br />
-    <span id="hz_slider"></span>
+    <span id="hz_slider" class="jq_slider"></span>
     <br />
-    <span id="step_reset_set" class="no_drag" >
-      <input type="button" id="step" value="Step" class="jq_button"/>
-      <input type="button" id="reset" /value="Reset" class="jq_button"/>
+    <span id="simulation_set">
+      <input type="button" id="step" value="Step" class="jq_button" />
+      <input type="button" id="reset" value="Reset" class="jq_button" />
     </span>
+    <hr />
+    <h3>Interaction</h3>
+    <span id="interaction_set">
+      <input type="radio" name="interaction_radio" id="interact_placement" checked="true" />
+      <label for="interact_placement" class="jq_button no_drag">Cells</label>
+      <input type="radio" name="interaction_radio" id="interact_movement" />
+      <label for="interact_movement" class="jq_button no_drag">Camera</label>
+    </span>
+    <label for="interaction_zoom">Zoom</label>
+    <input type="text" id="interaction_zoom" maxlength="2" size="1" value="1" class="no_drag" />%
+    <br />
+    <span id="interaction_zoom_slider" class="jq_slider"></span>
   </div>
 
   <footer>
-      Tested (only) on <a href="https://www.google.com/chrome">Google Chrome</a><br />
       Project Hosted on <a href="http://github.com/TheOnlyRew/myGame_of_Life">Github</a>
   </footer>
 

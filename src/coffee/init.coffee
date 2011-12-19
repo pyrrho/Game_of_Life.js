@@ -3,17 +3,17 @@ $( ->
 
     #UI Setup
     #=====
-
     #Make the marked panes draggable
     $(".movable_pane").draggable {cancel: ".no_drag"}
 
-    #Hide Anchor Functionality
+    #`Hide` Anchor Functionality
     $("#hide").on "click", (event) ->
         $("#help_pane").slideUp()
         undefined
 
-    #Button on click event setup
-    $("#step_reset_set").buttonset()
+    #Button  an `.on "click"` event setup
+    $("#simulation_set").buttonset()
+    $("#interaction_set").buttonset()
 
     play = false
     $("#play").button()
@@ -36,7 +36,7 @@ $( ->
             $("#play").click()
         undefined
 
-    #That slider.
+    #Hz slider.
     min_hz = 1
     max_hz = 50
     $("#hz_slider").slider(
@@ -56,7 +56,7 @@ $( ->
     $("#hz").on "change", (event) ->
         val = $("#hz").val()
         if isNaN(val)
-            ui.val "NaN"
+            $("#hz").val "NaN"
             return undefined
         val = parseInt(val)
         if val > max_hz then val = max_hz
@@ -64,6 +64,25 @@ $( ->
         $("#hz").val val
         $("#hz_slider").slider "value", val
         undefined
+
+    $("#interaction_placement").button()
+    $("#interaction_movement").button()
+
+    #Zoom sider.
+    min_zoom = 2
+    max_zoom = 100
+    $("#interaction_zoom_slider").slider(
+        min: min_zoom
+        max: max_zoom
+        value: 10
+        step: .5
+        slide: (event, ui) ->
+            $("#interaction_zoom").val ui.value*10
+            undefined
+        change: (event, ui) ->
+            $("#interaction_zoom").val ui.value*10
+            undefined
+        )
 
     # Setting the first help_pane tab as open, and showing the related
     # content
@@ -81,7 +100,6 @@ $( ->
         # and fade that puppy in.
         activeTab = $(@).find("a").attr("href")
         $(activeTab).fadeIn()
-
         # Return False to stop propgation of the click event.
         false
     
