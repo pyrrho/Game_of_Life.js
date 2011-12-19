@@ -1,4 +1,4 @@
-# Game\_Of\_Life.js #
+# [Game\_Of\_Life.js](http://theonlyrew.github.com/Game_of_Life.js/) #
 How do I teach myself HTML5, CSS3 and Javascript?  
 Yeah. This is how.
 

@@ -3,7 +3,8 @@
 body {
   font-family: Arial, Verdana, sans-serif;
   overflow: hidden;
-  color: #eaecec; }
+  color: #eaecec;
+  font-size: 90%; }
 
 p {
   text-indent: 1em;
