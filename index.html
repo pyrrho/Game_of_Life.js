@@ -24,30 +24,31 @@
       </header>
       <!--The Rules tab. -->
       <div id="tab_rules" class="tab_content">
-        <p>Read the full description of <a href="http://en.wikipedia.org/wiki/Conway's_Game_of_Life">Conway's Game of Life.</a></p>
-        <ul>The rules are as follows:
+        <ul>The Rules are as follows:
           <li>Every `generation` of the game, the cells are updated synchronously</li>
           <li>Any live cell with fewer than two live neighbors dies</li>
           <li>Any live cell with more than three live neighbors dies</li>
           <li>Any live cell with two or three live neighbors survives</li>
           <li>Any dead cell with exactly three live neighbors becomes alive</li>
         </ul>
+        <p>Read the full description of <a href="http://en.wikipedia.org/wiki/Conway's_Game_of_Life">John Conway's Game of Life.</a></p>
+        
       </div>
       <!--Controls tab. -->
       <div id="tab_ctrls" class="tab_content">
-        <ul>The basic controls are:
-          <li>Left-click any empty cell to 'raise' it&ndash;to make it alive</li>
-          <li>Left-click any live cell to kill it</li>
-          <li>Left-click and drag to either batch raise or batch kill cells</li>
-          <li>Right-click and drag anywhere on the board to move the view frustum</li>
-          <li>Hold both the Left and Right mouse buttons to zoom&ndash;up to zoom in, down to zoom out</li>
+        <ul>The basic Controls are:
+          <li>Left-click any empty cells to 'raise' them&ndash;to make them alive</li>
+          <li>Left-click any live cells to kill them</li>
+          <li>Left-click and drag to either batch raise or batch kill cells&ndash;it will depend on whether the initial click raised or killed a cell</li>
+          <li>Hold the spacebar while dragging (or manually select the `Move` intaction mode) to move around the canvas</li>
+          <li>Hold the shift key while dragging (or select the `zoom` mode) to zoom into or out of the canvas</li>
         </ul>
-        <p>The control pane to the right will allow you to play/pause the simulation, take a single step to the next generation, set the speed of the simulation, and completely reset the board.</p>
-        <p>All visible panes are movable, and you can hide this help pane by clicking the <a>hide</a> anchor to the right of the title text.</p> 
+        <p>The Simulation pane to the right will allow you to Play/Pause the simulation, take a single Step to the next generation, set the speed (hz) of the simulation, as well as completely Reset the board.</p>
+        <p>All visible panes are movable, and you can hide this help pane by clicking the <a>hide</a> anchor to the right of the title.</p> 
       </div>
       <!--The Credits tab. -->
       <div id="tab_how" class="tab_content">
-        <ul>
+        <ul>The Credits I can fit:
           <li>To start, <a href="http://www.quackit.com/html_5/tags/">HTML5</a> and <a href="http://www.w3schools.com/cssref/default.asp">CSS3</a>.</li>
           <li><a href="http://www.ecmascript.org/">JavaScript</a> and&mdash;with much greater ease&mdash;<a href="http://coffeescript.org/">CoffeeScript</a>. <a href="http://yuiblog.com/crockford/">Douglas Crockford's</a> video lectures on JavaScript are a wonderful resource, and <a href="http://arcturo.github.com/library/coffeescript/">The Little Book on CoffeeScript</a> a great place to start there.</li>
           <li><a href="http://sass-lang.com/">Sass</a> because variables, and screw CSS. Seriously.<br />Screw CSS.</li>
@@ -61,17 +62,16 @@
     <!--The actual tab side-bar. -->
     <ul class="tab_menu no_drag">
       <li class="open"><a href="#tab_rules">r<br />u<br />l<br />e<br />s</a></li>
-      <li><a href="#tab_ctrls">c<br />t<br />r<br />l</a></li>
+      <li><a href="#tab_ctrls">c<br />t<br />r<br />l<br />s</a></li>
       <!-- <li><a href="#tab_why">w<br />h<br />y</a></li> -->
-      <li><a href="#tab_how">h<br />o<br />w</a></li>
+      <li><a href="#tab_how">c<br />r<br />e<br />d<br />s</a></li>
     </ul>
   </div>
 
   <!--The Control Pane. -->
   <div id="control_pane" class="movable_pane content_pane">
     <h3>Simulation</h3>
-    <input type="checkbox" id="play" />
-    <label for="play" class="jq_button no_drag">Play</label>
+    <input type="button" id="play" value="Play" class="jq_button" />
     <label for="hz">Hz</label>
     <input type="text" id="hz" maxlength="2" size="1" value="4" class="no_drag" />
     <br />
@@ -84,15 +84,15 @@
     <hr />
     <h3>Interaction</h3>
     <span id="interaction_set">
-      <input type="radio" name="interaction_radio" id="interact_placement" checked="true" />
-      <label for="interact_placement" class="jq_button no_drag">Cells</label>
-      <input type="radio" name="interaction_radio" id="interact_movement" />
-      <label for="interact_movement" class="jq_button no_drag">Camera</label>
+      <input type="radio" name="interaction_radio" id="interaction_cell" checked="true" />
+      <label for="interaction_cell" class="jq_button">Cells</label>
+      <input type="radio" name="interaction_radio" id="interaction_move" />
+      <label for="interaction_move" class="jq_button">Move</label>
+      <input type="radio" name="interaction_radio" id="interaction_zoom" />
+      <label for="interaction_zoom" class="jq_button">Zoom</label>
     </span>
-    <label for="interaction_zoom">Zoom</label>
-    <input type="text" id="interaction_zoom" maxlength="2" size="1" value="1" class="no_drag" />%
-    <br />
-    <span id="interaction_zoom_slider" class="jq_slider"></span>
+    <sub>hold space and click to move</sub><br />
+    <sub>hold shift and click to zoom</sub>
   </div>
 
   <footer>

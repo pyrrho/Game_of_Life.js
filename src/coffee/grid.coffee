@@ -284,7 +284,8 @@ GoL = (canvas_element, width, height) ->
     #For JS events, 0 represents the right mouse button, 2 the left
     [mouse_left, mouse_right] = [0, 2]
 
-    gol.ctrl.active = [false, false]
+    gol.ctrl.action = "cell"
+    gol.ctrl.place_action = "raise"
     gol.ctrl.drag_start = x: 0, y: 0
     gol.ctrl.page_last = x: 0, y: 0
     gol.ctrl.abs_last = x: 0, y: 0
@@ -293,30 +294,25 @@ GoL = (canvas_element, width, height) ->
     gol.ctrl.running = undefined
 
     gol.ctrl.resolveMousedown = (page_x, page_y, button) ->
-        @active[button] = true
         @page_last = x: page_x, y: page_y
         abs = gol.view.pageToAbs(page_x, page_y)
-        #Starting a zoom?
-        if @active[mouse_left] and @active[mouse_right]
-            gol.view.setZoomOffset(page_x, page_y)
-        #Or messing with cells?
-        else if @active[mouse_left]
+        if @action is "cell"
             if gol.model.isAliveAt abs.x, abs.y
                 gol.model.killCell abs.x, abs.y
-                @active[mouse_left] = "kill"
+                @place_action = "kill"
             else
                 gol.model.raiseCell abs.x, abs.y
-                @active[mouse_left] = "raise"
+                @place_action = "raise"
             @abs_last = x: abs.x, y: abs.y
-        #Dragging the canvas around?
-        #else #if @active[mouse_right]
+        #else if @action is "move"
+            #uhh... pass?
+        else#if @action is "zoom"
+            gol.view.setZoomOffset(page_x, page_y)
         undefined
 
-    gol.ctrl.resolveMouseup = (button) ->
-        @active[button] = false
-        if not @active[mouse_left] and not @active[mouse_right]
-            @moving = false
-            _.defer => $("#draw_space").attr "oncontextmenu", " "
+    gol.ctrl.resolveMouseup = () ->
+        @moving = false
+        #_.defer => $("#draw_space").attr "oncontextmenu", " "
         undefined
     
     gol.ctrl.resolveMousemove = (page_x, page_y) ->
@@ -327,22 +323,22 @@ GoL = (canvas_element, width, height) ->
         if not @moving and Math.abs(delta_x) +
                            Math.abs(delta_y) > scroll_threshold
             @moving = true
-            $("#draw_space").attr "oncontextmenu", "return false"
+            #$("#draw_space").attr "oncontextmenu", "return false"
             @drag_start = x: @page_last.x, y: @page_last.y
 
         if @moving
-            if @active[mouse_left] and @active[mouse_right]
-                gol.view.zoom(delta_y)
-            else if @active[mouse_right]
-                gol.view.moveOffset(-delta_x, -delta_y)
-            else#if @active[mouse_left]
+            if @action is "cell"
                 abs = gol.view.pageToAbs(page_x, page_y)
                 if abs.x isnt @abs_last.x or abs.y isnt @abs_last.y
                     @abs_last = x: abs.x, y: abs.y
-                    if @active[mouse_left] is "raise"
+                    if @place_action is "raise"
                         gol.model.raiseCell abs.x, abs.y
                     else if gol.model.isAliveAt abs.x, abs.y
                         gol.model.killCell abs.x, abs.y
+            else if @action is "move"
+                gol.view.moveOffset(-delta_x, -delta_y)
+            else#if @action is "zoom"
+                gol.view.zoom(delta_y)
             @page_last.x = page_x
             @page_last.y = page_y
         undefined
@@ -379,41 +375,47 @@ GoL = (canvas_element, width, height) ->
         $raphael = $(canvas_element)
 
         $raphael.on "mousedown", (event) =>
-            gol.ctrl.resolveMousedown event.pageX, event.pageY, event.button
+            if event.button isnt 0
+                return true
+            gol.ctrl.resolveMousedown event.pageX, event.pageY
             $raphael.on "mousemove", (event) =>
                 gol.ctrl.resolveMousemove event.pageX, event.pageY
                 false
             false
         $(window).on "mouseup", (event) =>
-            gol.ctrl.resolveMouseup(event.button)
-            if not gol.ctrl.active[mouse_left] and not gol.ctrl.active[mouse_right]
-                $raphael.off "mousemove"
+            if event.button isnt 0
+                return true
+            gol.ctrl.resolveMouseup()
+            $raphael.off "mousemove"
             false
         $(window).on "resize", _.debounce (() =>
             gol.view.resizeCanvas($(window).width(), $(window).height())
-            undefined
+            true
             ), 90
         true
     )()
 
-    gol.step = () =>
+    gol.step = () ->
         gol.model.step()
         undefined
 
-    gol.start = () =>
+    gol.start = () ->
         gol.ctrl.start()
 
-    gol.stop = () =>
+    gol.stop = () ->
         gol.ctrl.stop()
     
-    gol.setHz = (hz) =>
+    gol.setHz = (hz) ->
         gol.ctrl.setHz(hz)
 
-    gol.reset = () =>
+    gol.reset = () ->
         gol.ctrl.reset()
         gol.model.reset()
         gol.view.drawGrid()
         undefined
+
+    gol.setAction = (action) ->
+        gol.ctrl.action = action
 
     gol.view.resizeCanvas(width, height)
 

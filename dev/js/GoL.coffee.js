@@ -3,7 +3,6 @@
 
   GoL = function(canvas_element, width, height) {
     var anim_duration, cell, dying_color, gol, max_zoom, min_zoom, mouse_left, mouse_right, neighbor_set, node_size, raising_color, scroll_threshold, stroke_opacity, zoom_scalar, _ref;
-    var _this = this;
     raising_color = "#005500";
     dying_color = "#550000";
     stroke_opacity = 0.2;
@@ -303,7 +302,8 @@
     };
     scroll_threshold = 5;
     _ref = [0, 2], mouse_left = _ref[0], mouse_right = _ref[1];
-    gol.ctrl.active = [false, false];
+    gol.ctrl.action = "cell";
+    gol.ctrl.place_action = "raise";
     gol.ctrl.drag_start = {
       x: 0,
       y: 0
@@ -321,38 +321,30 @@
     gol.ctrl.running = void 0;
     gol.ctrl.resolveMousedown = function(page_x, page_y, button) {
       var abs;
-      this.active[button] = true;
       this.page_last = {
         x: page_x,
         y: page_y
       };
       abs = gol.view.pageToAbs(page_x, page_y);
-      if (this.active[mouse_left] && this.active[mouse_right]) {
-        gol.view.setZoomOffset(page_x, page_y);
-      } else if (this.active[mouse_left]) {
+      if (this.action === "cell") {
         if (gol.model.isAliveAt(abs.x, abs.y)) {
           gol.model.killCell(abs.x, abs.y);
-          this.active[mouse_left] = "kill";
+          this.place_action = "kill";
         } else {
           gol.model.raiseCell(abs.x, abs.y);
-          this.active[mouse_left] = "raise";
+          this.place_action = "raise";
         }
         this.abs_last = {
           x: abs.x,
           y: abs.y
         };
+      } else {
+        gol.view.setZoomOffset(page_x, page_y);
       }
       return;
     };
-    gol.ctrl.resolveMouseup = function(button) {
-      var _this = this;
-      this.active[button] = false;
-      if (!this.active[mouse_left] && !this.active[mouse_right]) {
-        this.moving = false;
-        _.defer(function() {
-          return $("#draw_space").attr("oncontextmenu", " ");
-        });
-      }
+    gol.ctrl.resolveMouseup = function() {
+      this.moving = false;
       return;
     };
     gol.ctrl.resolveMousemove = function(page_x, page_y) {
@@ -361,30 +353,29 @@
       delta_y = this.page_last.y - page_y;
       if (!this.moving && Math.abs(delta_x) + Math.abs(delta_y) > scroll_threshold) {
         this.moving = true;
-        $("#draw_space").attr("oncontextmenu", "return false");
         this.drag_start = {
           x: this.page_last.x,
           y: this.page_last.y
         };
       }
       if (this.moving) {
-        if (this.active[mouse_left] && this.active[mouse_right]) {
-          gol.view.zoom(delta_y);
-        } else if (this.active[mouse_right]) {
-          gol.view.moveOffset(-delta_x, -delta_y);
-        } else {
+        if (this.action === "cell") {
           abs = gol.view.pageToAbs(page_x, page_y);
           if (abs.x !== this.abs_last.x || abs.y !== this.abs_last.y) {
             this.abs_last = {
               x: abs.x,
               y: abs.y
             };
-            if (this.active[mouse_left] === "raise") {
+            if (this.place_action === "raise") {
               gol.model.raiseCell(abs.x, abs.y);
             } else if (gol.model.isAliveAt(abs.x, abs.y)) {
               gol.model.killCell(abs.x, abs.y);
             }
           }
+        } else if (this.action === "move") {
+          gol.view.moveOffset(-delta_x, -delta_y);
+        } else {
+          gol.view.zoom(delta_y);
         }
         this.page_last.x = page_x;
         this.page_last.y = page_y;
@@ -431,7 +422,8 @@
       var _this = this;
       $raphael = $(canvas_element);
       $raphael.on("mousedown", function(event) {
-        gol.ctrl.resolveMousedown(event.pageX, event.pageY, event.button);
+        if (event.button !== 0) return true;
+        gol.ctrl.resolveMousedown(event.pageX, event.pageY);
         $raphael.on("mousemove", function(event) {
           gol.ctrl.resolveMousemove(event.pageX, event.pageY);
           return false;
@@ -439,15 +431,14 @@
         return false;
       });
       $(window).on("mouseup", function(event) {
-        gol.ctrl.resolveMouseup(event.button);
-        if (!gol.ctrl.active[mouse_left] && !gol.ctrl.active[mouse_right]) {
-          $raphael.off("mousemove");
-        }
+        if (event.button !== 0) return true;
+        gol.ctrl.resolveMouseup();
+        $raphael.off("mousemove");
         return false;
       });
       $(window).on("resize", _.debounce((function() {
         gol.view.resizeCanvas($(window).width(), $(window).height());
-        return;
+        return true;
       }), 90));
       return true;
     })();
@@ -470,12 +461,15 @@
       gol.view.drawGrid();
       return;
     };
+    gol.setAction = function(action) {
+      return gol.ctrl.action = action;
+    };
     gol.view.resizeCanvas(width, height);
     return gol;
   };
 
   $(function() {
-    var max_hz, min_hz, play;
+    var $interaction_cell, $interaction_move, $interaction_zoom, max_hz, min_hz, play, shift_is_down, space_is_down;
     window.game_of_life = GoL("#draw_space", $(window).width(), $(window).height());
     $(".movable_pane").draggable({
       cancel: ".no_drag"
@@ -484,15 +478,20 @@
       $("#help_pane").slideUp();
       return;
     });
-    $("#step_reset_set").buttonset();
+    $("#simulation_set").buttonset();
+    $("#interaction_set").buttonset();
     play = false;
     $("#play").button();
     $("#play").on("click", function(event) {
       if (!play) {
         play = true;
+        $("#play").attr("value", "Pause");
+        $("#play").addClass("ui-state-active");
         game_of_life.start();
       } else {
         play = false;
+        $("#play").attr("value", "Play");
+        $("#play").removeClass("ui-state-active");
         game_of_life.stop();
       }
       return;
@@ -528,7 +527,7 @@
       var val;
       val = $("#hz").val();
       if (isNaN(val)) {
-        ui.val("NaN");
+        $("#hz").val("NaN");
         return;
       }
       val = parseInt(val);
@@ -539,6 +538,48 @@
       }
       $("#hz").val(val);
       $("#hz_slider").slider("value", val);
+      return;
+    });
+    $interaction_cell = $("#interaction_cell");
+    $interaction_cell.on("click", function(event) {
+      game_of_life.setAction("cell");
+      return $("#draw_space").css("cursor", "default");
+    });
+    $interaction_move = $("#interaction_move");
+    $interaction_move.on("click", function(event) {
+      game_of_life.setAction("move");
+      return $("#draw_space").css("cursor", "move");
+    });
+    $interaction_zoom = $("#interaction_zoom");
+    $interaction_zoom.on("click", function(event) {
+      game_of_life.setAction("zoom");
+      return $("#draw_space").css("cursor", "n-resize");
+    });
+    shift_is_down = false;
+    space_is_down = false;
+    $(window).on("keydown", function(event) {
+      if (event.which === 32) {
+        space_is_down = true;
+        $interaction_move.click();
+      } else if (event.which === 16) {
+        shift_is_down = true;
+        $interaction_zoom.click();
+      }
+      return;
+    });
+    $(window).on("keyup", function(event) {
+      if (event.which === 32) {
+        space_is_down = false;
+      } else if (event.which === 16) {
+        shift_is_down = false;
+      }
+      if (shift_is_down) {
+        $interaction_zoom.click();
+      } else if (space_is_down) {
+        $interaction_move.click();
+      } else {
+        $interaction_cell.click();
+      }
       return;
     });
     $("div.tab_content:first").show();

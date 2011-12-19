@@ -14,8 +14,9 @@ a {
   color: #eaecec; }
 
 sub {
-  font-size: 80%;
-  vertical-align: -15%; }
+  font-size: 70%;
+  font-variant: small-caps;
+  padding-left: 1em; }
 
 header {
   font-family: serif;
@@ -55,21 +56,22 @@ div.content_pane {
 -----*/
 #control_pane {
   position: absolute;
-  width: 145px;
+  width: 167px;
   top: 40px;
   right: 40px; }
   #control_pane h3 {
     font-size: 1.2em;
     font-family: serif;
     padding-bottom: .2em; }
+  #control_pane #play {
+    width: 80px; }
   #control_pane .jq_button {
     font-size: .7em; }
-
-#hz_slider {
-  display: inline-block;
-  cursor: pointer;
-  width: 100%;
-  font-size: .5em; }
+  #control_pane .jq_slider {
+    display: inline-block;
+    cursor: pointer;
+    width: 100%;
+    font-size: .5em; }
 
 /*HELP PANE
 -----*/

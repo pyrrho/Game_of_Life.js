@@ -20,9 +20,13 @@ $( ->
     $("#play").on "click", (event) ->
         if not play
             play = true
+            $("#play").attr "value", "Pause"
+            $("#play").addClass("ui-state-active")
             game_of_life.start()
         else
             play = false
+            $("#play").attr "value", "Play"
+            $("#play").removeClass("ui-state-active")
             game_of_life.stop()
         undefined
 
@@ -65,24 +69,46 @@ $( ->
         $("#hz_slider").slider "value", val
         undefined
 
-    $("#interaction_placement").button()
-    $("#interaction_movement").button()
+    $interaction_cell = $("#interaction_cell")
+    $interaction_cell.on "click", (event) ->
+        game_of_life.setAction "cell"
+        $("#draw_space").css "cursor", "default"
 
-    #Zoom sider.
-    min_zoom = 2
-    max_zoom = 100
-    $("#interaction_zoom_slider").slider(
-        min: min_zoom
-        max: max_zoom
-        value: 10
-        step: .5
-        slide: (event, ui) ->
-            $("#interaction_zoom").val ui.value*10
-            undefined
-        change: (event, ui) ->
-            $("#interaction_zoom").val ui.value*10
-            undefined
-        )
+    $interaction_move = $("#interaction_move")
+    $interaction_move.on "click", (event) ->
+        game_of_life.setAction "move"
+        $("#draw_space").css "cursor", "move"
+
+    $interaction_zoom = $("#interaction_zoom")
+    $interaction_zoom.on "click", (event) ->
+        game_of_life.setAction "zoom"
+        $("#draw_space").css "cursor", "n-resize"
+
+    #Spacebar/shift key capture to change interaction mode.
+    shift_is_down = false
+    space_is_down = false
+    $(window).on "keydown", (event) ->
+        if event.which is 32 #spacebar
+            space_is_down = true
+            $interaction_move.click()
+        else if event.which is 16 #shift key (either one)
+            shift_is_down = true
+            $interaction_zoom.click()
+        undefined
+    $(window).on "keyup", (event) ->
+        if event.which is 32 #spacebar
+            space_is_down = false
+        else if event.which is 16 #shift key
+            shift_is_down = false
+
+        if shift_is_down
+            $interaction_zoom.click()
+        else if space_is_down
+            $interaction_move.click()
+        else
+            $interaction_cell.click()
+        undefined
+            
 
     # Setting the first help_pane tab as open, and showing the related
     # content

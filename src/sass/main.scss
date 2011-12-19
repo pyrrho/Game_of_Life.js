@@ -21,8 +21,9 @@ a {
 }
 
 sub {
-    font-size: 80%;
-    vertical-align: -15%;
+    font-size: 70%;
+    font-variant: small-caps;
+    padding-left: 1em;
 }
 
 header {
@@ -85,13 +86,17 @@ div.content_pane {
 -----*/
 #control_pane {
     position: absolute;
-    width: 145px;
+    width: 167px;
     top: 40px; right: 40px;
 
     h3 {
         font-size: 1.2em;
         font-family: serif;
         padding-bottom: .2em;
+    }
+
+    #play {
+        width: 80px;
     }
 
     .jq_button {
