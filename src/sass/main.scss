@@ -39,12 +39,12 @@ header {
     }
 }
 
-/*In an attempt to make non-draggable components non-selectable
-*/
-.no_drag {
-    user-select: none;
-    -webkit-user-select: none;
-}
+// /*In an attempt to make non-draggable components non-selectable
+// */
+// .no_drag {
+//     user-select: none;
+//     -webkit-user-select: none;
+// }
 
 
 /*CONTENT PANES

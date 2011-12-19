@@ -26,12 +26,10 @@ $( ->
             game_of_life.stop()
         undefined
 
-    $("#step").button()
     $("#step").on "click", (event) ->
         game_of_life.step()
         undefined
 
-    $("#reset").button()
     $("#reset").on "click", (event) ->
         game_of_life.reset()
         if play

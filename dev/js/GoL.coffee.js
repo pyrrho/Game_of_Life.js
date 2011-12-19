@@ -497,12 +497,10 @@
       }
       return;
     });
-    $("#step").button();
     $("#step").on("click", function(event) {
       game_of_life.step();
       return;
     });
-    $("#reset").button();
     $("#reset").on("click", function(event) {
       game_of_life.reset();
       if (play) $("#play").click();
