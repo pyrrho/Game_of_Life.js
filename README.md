@@ -1,4 +1,4 @@
-# Game\_Of\_Life.js #
+# [Game\_Of\_Life.js](http://theonlyrew.github.com/Game_of_Life.js/) #
 How do I teach myself HTML5, CSS3 and Javascript?  
 Yeah. This is how.
 
@@ -40,5 +40,4 @@ This project is released under the [MIT License](http://www.opensource.org/licen
   
 #### To Dos ####
 
- * Holy crap OSX/Forcably enabled context menus! Fix the Mouse Interaction.
  * Add `Turn off Animations` check box
