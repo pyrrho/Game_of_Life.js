@@ -1,0 +1,162 @@
+/*GENERAL STYLES
+-----*/
+body {
+  font-family: Arial, Verdana, sans-serif;
+  overflow: hidden;
+  color: #eaecec; }
+
+p {
+  text-indent: 1em;
+  padding-left: -1em;
+  padding-bottom: .4em; }
+
+a {
+  color: #eaecec; }
+
+sub {
+  font-size: 80%;
+  vertical-align: -15%; }
+
+header {
+  font-family: serif;
+  font-size: 1.4em;
+  font-weight: 100;
+  padding-bottom: .5em; }
+  header #hide {
+    font-size: .6em;
+    position: absolute;
+    right: 10px;
+    cursor: pointer; }
+
+/*In an attempt to make non-draggable components non-selectable
+*/
+.no_drag {
+  user-select: none;
+  -webkit-user-select: none; }
+
+/*CONTENT PANES
+-----*/
+div.content_pane {
+  border-radius: 12px;
+  padding: 10px;
+  background: rgba(16, 17, 20, 0.6);
+  box-shadow: 2px 2px 16px rgba(0, 0, 0, 0.6); }
+  div.content_pane strong {
+    font-weight: bold; }
+  div.content_pane a {
+    font-variant: small-caps; }
+  div.content_pane ul {
+    list-style: none inside; }
+  div.content_pane li:first-child {
+    margin-top: .3em; }
+  div.content_pane li {
+    margin-left: .4em;
+    padding-left: .3em;
+    margin-bottom: .4em;
+    border-bottom-left-radius: .4em;
+    border-top-left-radius: 1px .4em;
+    border-left: solid 2px rgba(234, 236, 236, 0.8); }
+
+/*CONTROL PANE
+-----*/
+#control_pane {
+  position: absolute;
+  width: 145px;
+  top: 40px;
+  right: 40px; }
+  #control_pane h3 {
+    font-size: 1.2em;
+    font-family: serif;
+    padding-bottom: .2em; }
+  #control_pane .jq_button {
+    font-size: .7em; }
+
+#hz_slider {
+  display: inline-block;
+  cursor: pointer;
+  width: 100%;
+  font-size: .5em; }
+
+/*HELP PANE
+-----*/
+#help_pane {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 300px;
+  word-wrap: break-word; }
+
+ul.tab_menu {
+  width: 20px;
+  float: left;
+  display: block;
+  text-align: center;
+  margin-top: 30px;
+  cursor: pointer; }
+  ul.tab_menu a {
+    text-decoration: none;
+    font-variant: small-caps;
+    color: #eee; }
+  ul.tab_menu li {
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+    padding: 16px 4px;
+    background: rgba(133, 139, 158, 0.6);
+    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.6);
+    transition: all .25s ease;
+    -webkit-transition: all .25s ease; }
+  ul.tab_menu li:hover {
+    background: rgba(73, 77, 91, 0.6);
+    margin-top: -2px;
+    margin-bottom: 2px;
+    box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.6);
+    transition: all .25s ease;
+    -webkit-transition: all .25s ease; }
+  ul.tab_menu li.open {
+    background: rgba(16, 17, 20, 0.6);
+    margin-top: -2px;
+    margin-bottom: 2px;
+    box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.6);
+    transition: all .25s ease;
+    -webkit-transition: all .25s ease; }
+  ul.tab_menu li.open:hover {
+    background: rgba(16, 17, 20, 0.6);
+    margin-top: -2px;
+    margin-bottom: 2px;
+    box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.6); }
+
+div.tab_container {
+  float: right;
+  width: 255px;
+  min-height: 370px;
+  display: block;
+  padding-left: 15px; }
+
+div.tab_content {
+  display: none; }
+
+/*FOOTER
+-----*/
+footer {
+  color: #333;
+  font-size: 70%;
+  text-align: center;
+  position: absolute;
+  width: 200px;
+  bottom: 10px;
+  left: 50%;
+  margin-left: -100px;
+  background: rgba(255, 255, 255, 0.5);
+  padding: 5px;
+  border-radius: 5px; }
+  footer a {
+    color: #33A; }
+
+/*DEBUG PANE
+-----*/
+#debug_pane {
+  position: absolute;
+  top: 70%;
+  right: 20px;
+  width: 300px;
+  display: none; }
